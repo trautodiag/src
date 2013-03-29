@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{d65d7858-7863-4fb3-b965-0586b17a2c3c}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>..\bin\Protocollo.exe</DCC_DependencyCheckOutputName>
+    <MainSource>Protocollo.dpr</MainSource>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_Define>RELEASE</DCC_Define>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_Define>DEBUG</DCC_Define>
+    <DCC_ExeOutput>..\bin</DCC_ExeOutput>
+    <DCC_DcuOutput>..\dcu</DCC_DcuOutput>
+    <DCC_ObjOutput>..\dcu</DCC_ObjOutput>
+    <DCC_HppOutput>..\dcu</DCC_HppOutput>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1046</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">Protocollo.dpr</Source></Source></Delphi.Personality><ModelSupport>False</ModelSupport></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <ItemGroup>
+    <DelphiCompile Include="Protocollo.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="Unit_DM.pas">
+      <Form>DM</Form>
+      <DesignClass>TDataModule</DesignClass>
+    </DCCReference>
+    <DCCReference Include="Unt_BaseAnCad.pas">
+      <Form>F_BaseAnCad</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_BaseCad.pas">
+      <Form>F_BaseCad</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_BaseIni.pas">
+      <Form>F_BaseIni</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_CadAgendaCompromisso.pas">
+      <Form>F_CadAgendaCompromisso</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_CadAnAgendaCompromisso.pas">
+      <Form>F_CadAnAgendaCompromisso</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_CadAnArquivo.pas">
+      <Form>F_CadAnArquivo</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_CadAnClientes.pas">
+      <Form>F_CadAnClientes</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_CadAnDocumentos.pas">
+      <Form>F_CadAnDocumentos</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_CadAnEmpresas.pas">
+      <Form>F_CadAnEmpresas</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_CadAnProtocolos.pas">
+      <Form>F_CadAnProtocolos</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_CadAnSetores.pas">
+      <Form>F_CadAnSetores</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_CadAnUsuarios.pas">
+      <Form>F_CadAnUsuarios</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_CadClientes.pas">
+      <Form>F_CadClientes</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_CadDocumentos.pas">
+      <Form>F_CadDocumentos</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_CadEmpresas.pas">
+      <Form>F_CadEmpresas</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_CadProtocolos.pas">
+      <Form>F_CadProtocolos</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_CadSetores.pas">
+      <Form>F_CadSetores</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_CadUsuarios.pas">
+      <Form>F_CadUsuarios</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_ProtocoloIni.pas">
+      <Form>F_ProtocoloIni</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_Sobre.pas">
+      <Form>F_Sobre</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_UpDown.pas">
+      <Form>F_UpDown</Form>
+    </DCCReference>
+    <DCCReference Include="Unt_Util.pas" />
+  </ItemGroup>
+</Project>
