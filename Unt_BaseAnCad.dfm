@@ -185,6 +185,7 @@ object F_BaseAnCad: TF_BaseAnCad
             Navigator.Buttons.Filter.Visible = False
             Navigator.InfoPanel.DisplayMask = '[RecordIndex] de [RecordCount]'
             Navigator.Visible = True
+            OnCellClick = vwl_baseCellClick
             OnCellDblClick = vwl_baseCellDblClick
             DataController.DataSource = ds_dados
             DataController.Summary.DefaultGroupSummaryItems = <>
@@ -229,7 +230,7 @@ object F_BaseAnCad: TF_BaseAnCad
     Left = 208
     Top = 160
     Bitmap = {
-      494C010105001800580080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101050018005C0080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000000200000001000001002000000000000000
       0800000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

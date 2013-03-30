@@ -416,6 +416,9 @@ object DM: TDM
     object cds_AgendaCompromissoAGC_Minuto: TIntegerField
       FieldName = 'AGC_Minuto'
     end
+    object cds_AgendaCompromissoAGC_Alerta: TBooleanField
+      FieldName = 'AGC_Alerta'
+    end
   end
   object ds_AgendaCompromisso: TDataSource
     DataSet = cds_AgendaCompromisso

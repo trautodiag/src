@@ -102,6 +102,7 @@ type
     cds_AgendaCompromissoData: TDateTimeField;
     cds_AgendaCompromissoAGC_Hora: TIntegerField;
     cds_AgendaCompromissoAGC_Minuto: TIntegerField;
+    cds_AgendaCompromissoAGC_Alerta: TBooleanField;
     procedure DataModuleCreate(Sender: TObject);
     procedure cds_documentosNewRecord(DataSet: TDataSet);
     procedure cds_documentosAfterDelete(DataSet: TDataSet);

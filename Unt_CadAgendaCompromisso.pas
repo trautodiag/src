@@ -8,7 +8,7 @@ uses
   cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters, Menus,
   ActnList, StdCtrls, cxButtons, ExtCtrls, cxPC, db, Unit_DM, Mask, DBCtrls,
   cxContainer, cxEdit, cxMemo, cxDBEdit, cxSpinEdit, cxTextEdit, cxMaskEdit,
-  cxDropDownEdit, cxCalendar, cxCheckBox;
+  cxDropDownEdit, cxCalendar, cxCheckBox, Unt_Util;
 
 type
   TF_CadAgendaCompromisso = class(TF_BaseCad)
@@ -51,11 +51,18 @@ begin
 end;
 
 procedure TF_CadAgendaCompromisso.act_SalvarExecute(Sender: TObject);
+var
+  OutHandleIni: THandle;
 begin
   if ValidaCadastro then
     begin
+      DM.cds_AgendaCompromissoAGC_Alerta.asBoolean:= False;
       DM.cds_AgendaCompromissoData.AsDateTime:= Now;
       DM.cds_AgendaCompromisso.Post;
+      OutHandleIni:= FindWindow('TF_ProtocoloIni',nil);
+      SendMessage(OutHandleIni, WM_SALVO, 0, 0);
+      OutHandleIni:= FindWindow('TF_Sobre',nil);
+      SendMessage(OutHandleIni, WM_SALVO, 0, 0);
       inherited;
     end;
 end;

@@ -99,6 +99,7 @@ type
     originalPanelWindowProc : TWndMethod;
     FHotData: TDate;
     { Private declarations }
+    procedure AtualizaResgistros(var Msg: TMessage); message WM_SALVO;
     function GetTipoDaImagem(p_Stream: TMemoryStream):TTipoImagem;
     procedure Esconde(var Msg: TMessage); message WM_UP;
     procedure Mostra(var Msg: TMessage); message WM_NOTUP;
@@ -511,6 +512,14 @@ procedure TF_Sobre.AMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
   Self.AlphaBlendValue:= 255;
+end;
+
+procedure TF_Sobre.AtualizaResgistros(var Msg: TMessage);
+begin
+  cds_dados.Data:= DM.cds_AgendaCompromisso.Data;
+  cds_dados.Filtered:= False;
+  cds_dados.Filter:= 'AGC_Data = '+FormatDateTime('yyyy-mm-dd',HotData);
+  cds_dados.Filtered:= True;
 end;
 
 procedure TF_Sobre.btn_OKClick(Sender: TObject);

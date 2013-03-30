@@ -68,6 +68,9 @@ type
     procedure vwl_baseCellDblClick(Sender: TcxCustomGridTableView;
       ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
       AShift: TShiftState; var AHandled: Boolean);
+    procedure vwl_baseCellClick(Sender: TcxCustomGridTableView;
+      ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
+      AShift: TShiftState; var AHandled: Boolean);
   private
     FTabelaAtualizar: TClientDataSet;
     FFieldTab: string;
@@ -565,6 +568,13 @@ end;
 procedure TF_BaseAnCad.SetValor(const Value: string);
 begin
   FFieldTab := Value;
+end;
+
+procedure TF_BaseAnCad.vwl_baseCellClick(Sender: TcxCustomGridTableView;
+  ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
+  AShift: TShiftState; var AHandled: Boolean);
+begin
+  TabelaAtualizar.Locate(FieldChave, cds_dados.FieldByName(FieldChave).AsInteger, []);
 end;
 
 procedure TF_BaseAnCad.vwl_baseCellDblClick(Sender: TcxCustomGridTableView;

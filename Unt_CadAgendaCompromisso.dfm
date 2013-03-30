@@ -4,15 +4,19 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
   ClientWidth = 465
   OnShow = FormShow
   ExplicitWidth = 471
-  ExplicitHeight = 272
+  ExplicitHeight = 268
   PixelsPerInch = 96
   TextHeight = 13
   inherited pgctrl_base: TcxPageControl
     Width = 465
     Height = 240
+    ExplicitWidth = 465
+    ExplicitHeight = 240
     ClientRectBottom = 239
     ClientRectRight = 464
     inherited ts_base: TcxTabSheet
+      ExplicitWidth = 463
+      ExplicitHeight = 238
       object lbl_cod: TLabel [0]
         Left = 8
         Top = 7
@@ -60,11 +64,15 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
         Top = 205
         Width = 463
         TabOrder = 7
+        ExplicitTop = 205
+        ExplicitWidth = 463
         inherited btn_Salvar: TcxButton
           Left = 271
+          ExplicitLeft = 271
         end
         inherited btn_Cancelar: TcxButton
           Left = 368
+          ExplicitLeft = 368
         end
       end
       object dbedt_AGC_Cod: TDBEdit
