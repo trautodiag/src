@@ -80,7 +80,6 @@ type
     FFieldData: string;
     { Private declarations }
     //procedure LimpaIcons;
-    procedure AtualizaResgistros(var Msg: TMessage); message WM_SALVO;
     procedure SetTabelaAtualizar(const Value: TClientDataSet);
     procedure SetValor(const Value: string);
     procedure SetIndexImg(const Value: Integer);
@@ -103,6 +102,7 @@ type
   protected
     FPesquisa: Boolean;
     FTabelaDataSource: TDataSource;
+    procedure AtualizaResgistros(var Msg: TMessage); message WM_SALVO;
     procedure SetInformacoes(ATabelaAtualizar: TClientDataSet; AFieldTab, AFieldChave, AFieldData: string; const AIndexImg:Integer = -1);virtual;
     procedure DblClica(Sender: TObject); virtual;
     //procedure OrganizaIcons(const ATipo: TOrganiza = orgCod);

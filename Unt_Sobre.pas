@@ -78,6 +78,13 @@ type
     vwl_baseColumn4: TcxGridDBColumn;
     tbl_base: TcxGridLevel;
     vwl_baseColumn5: TcxGridDBColumn;
+    tbl_associacao: TcxGridLevel;
+    vwl_associacao: TcxGridDBTableView;
+    vwl_associacaoColumn1: TcxGridDBColumn;
+    cds_associacao: TClientDataSet;
+    ds_associacao: TDataSource;
+    cds_Arquivo: TClientDataSet;
+    ds_Arquivo: TDataSource;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -99,6 +106,9 @@ type
       var ADone: Boolean);
     procedure act_NovoCompromissoExecute(Sender: TObject);
     procedure act_ExcluirCompromissoExecute(Sender: TObject);
+    procedure vwl_associacaoColumn1GetDisplayText(
+      Sender: TcxCustomGridTableItem; ARecord: TcxCustomGridRecord;
+      var AText: string);
   private
     FAltura: Integer;
     FHotDia: Integer;
@@ -553,6 +563,10 @@ begin
   cds_dados.Filtered:= False;
   cds_dados.Filter:= 'AGC_Data = '+FormatDateTime('yyyy-mm-dd',HotData);
   cds_dados.Filtered:= True;
+
+  cds_associacao.Data:= DM.cds_acoesAgComp.Data;
+  cds_associacao.IndexFieldNames:= 'AAC_AGC_Cod';
+  cds_Arquivo.Data:= DM.cds_arquivo.Data;
 end;
 
 procedure TF_Sobre.btn_OKClick(Sender: TObject);
@@ -622,12 +636,34 @@ begin
   cds_dados.Filtered:= False;
   cds_dados.Filter:= 'AGC_Data = '+FormatDateTime('yyyy-mm-dd',HotData);
   cds_dados.Filtered:= True;
+
+  cds_associacao.Data:= DM.cds_acoesAgComp.Data;
+  cds_associacao.IndexFieldNames:= 'AAC_AGC_Cod';
+  cds_Arquivo.Data:= DM.cds_arquivo.Data;
 end;
 
 procedure TF_Sobre.ts_CaixaClienteShow(Sender: TObject);
 begin
   dbedt_PRO_CLI_Cod.SetFocus;
   il_status.GetIcon(2, img_status.Picture.Icon);
+end;
+
+procedure TF_Sobre.vwl_associacaoColumn1GetDisplayText(
+  Sender: TcxCustomGridTableItem; ARecord: TcxCustomGridRecord;
+  var AText: string);
+begin
+  if trim(AText) <> '' then
+    begin
+      cds_Arquivo.Filtered:= False;
+      cds_Arquivo.Filter:= 'ARQ_Cod =' +AText;
+      cds_Arquivo.Filtered:= True;
+      if not cds_Arquivo.IsEmpty then
+        AText:= cds_Arquivo.FieldByName('ARQ_Nome').AsString
+      else
+        AText:= 'Arquivo/Ação não identificado';
+    end
+  else
+    AText:= 'Arquivo/Ação não identificado';
 end;
 
 procedure TF_Sobre.vwl_baseCustomDrawCell(Sender: TcxCustomGridTableView;

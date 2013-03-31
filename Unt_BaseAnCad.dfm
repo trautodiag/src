@@ -31,6 +31,7 @@ object F_BaseAnCad: TF_BaseAnCad
     Properties.ActivePage = ts_base
     Properties.CustomButtons.Buttons = <>
     Properties.HideTabs = True
+    LookAndFeel.SkinName = 'Office2010Blue'
     ClientRectBottom = 486
     ClientRectLeft = 1
     ClientRectRight = 779
@@ -164,6 +165,7 @@ object F_BaseAnCad: TF_BaseAnCad
           Height = 399
           Align = alClient
           TabOrder = 0
+          LookAndFeel.SkinName = 'Office2010Blue'
           object vwl_base: TcxGridDBTableView
             Navigator.Buttons.CustomButtons = <>
             Navigator.Buttons.First.Visible = False
@@ -230,7 +232,7 @@ object F_BaseAnCad: TF_BaseAnCad
     Left = 208
     Top = 160
     Bitmap = {
-      494C010105001800600080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010105001800640080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000000200000001000001002000000000000000
       0800000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

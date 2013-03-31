@@ -8,7 +8,10 @@ uses
   cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters, Menus,
   ActnList, StdCtrls, cxButtons, ExtCtrls, cxPC, db, Unit_DM, Mask, DBCtrls,
   cxContainer, cxEdit, cxMemo, cxDBEdit, cxSpinEdit, cxTextEdit, cxMaskEdit,
-  cxDropDownEdit, cxCalendar, cxCheckBox, Unt_Util, Unt_CadAnArquivo, DBClient;
+  cxDropDownEdit, cxCalendar, cxCheckBox, Unt_Util, Unt_CadAnArquivo, DBClient,
+  dxSkinOffice2007Blue, cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage,
+  cxDBData, cxGridCustomTableView, cxGridTableView, cxGridDBTableView,
+  cxGridLevel, cxClasses, cxGridCustomView, cxGrid;
 
 type
   TF_CadAgendaCompromisso = class(TF_BaseCad)
@@ -25,13 +28,31 @@ type
     dbspndt_AGC_Minuto: TcxDBSpinEdit;
     lbl_Obs: TLabel;
     dbm_AGC_Observacao: TcxDBMemo;
-    btn_VincularArq: TcxButton;
     act_VincularArq: TAction;
+    btn_VincularArq: TcxButton;
+    pnl_ArquivosVinculados: TPanel;
+    pnl_inserir: TPanel;
+    act_ExcluirArquivo: TAction;
+    btn_novovinculo: TcxButton;
+    btn_ExcluirArqAcao: TcxButton;
+    grid_base: TcxGrid;
+    vwl_base: TcxGridDBTableView;
+    tbl_base: TcxGridLevel;
+    vwl_baseColumn1: TcxGridDBColumn;
+    cds_ArqAcao: TClientDataSet;
+    ds_ArqAcao: TDataSource;
+    act_abriVinculo: TAction;
+    ds_Arquivo: TDataSource;
+    cds_Arquivo: TClientDataSet;
     procedure FormShow(Sender: TObject);
     procedure act_SalvarExecute(Sender: TObject);
     procedure act_CancelarExecute(Sender: TObject);
     procedure dbedt_AGC_HoraKeyPress(Sender: TObject; var Key: Char);
     procedure act_VincularArqExecute(Sender: TObject);
+    procedure act_ExcluirArquivoExecute(Sender: TObject);
+    procedure act_abriVinculoExecute(Sender: TObject);
+    procedure vwl_baseColumn1GetDisplayText(Sender: TcxCustomGridTableItem;
+      ARecord: TcxCustomGridRecord; var AText: string);
   private
     { Private declarations }
     FSobre: Boolean;
@@ -49,10 +70,28 @@ implementation
 
 {$R *.dfm}
 
+procedure TF_CadAgendaCompromisso.act_abriVinculoExecute(Sender: TObject);
+begin
+  inherited;
+  pnl_ArquivosVinculados.Visible:= TAction(Sender).Checked;
+  if not pnl_ArquivosVinculados.Visible then
+    Self.Height:= Self.Height - pnl_ArquivosVinculados.Height
+  else
+    Self.Height:= Self.Height + pnl_ArquivosVinculados.Height;
+
+  Self.Top:= (Screen.Height - Self.Height) div 2;
+end;
+
 procedure TF_CadAgendaCompromisso.act_CancelarExecute(Sender: TObject);
 begin
   DM.cds_AgendaCompromisso.Cancel;
   inherited;
+end;
+
+procedure TF_CadAgendaCompromisso.act_ExcluirArquivoExecute(Sender: TObject);
+begin
+  inherited;
+  cds_ArqAcao.Delete;
 end;
 
 procedure TF_CadAgendaCompromisso.act_SalvarExecute(Sender: TObject);
@@ -64,6 +103,20 @@ begin
       DM.cds_AgendaCompromissoAGC_Alerta.asBoolean:= False;
       DM.cds_AgendaCompromissoData.AsDateTime:= Now;
       DM.cds_AgendaCompromisso.Post;
+
+      if not cds_ArqAcao.IsEmpty then
+        begin
+          cds_ArqAcao.First;
+          while not cds_ArqAcao.Eof do
+            begin
+              DM.cds_acoesAgComp.Insert;
+              DM.cds_acoesAgComp.FieldByName('AAC_AGC_Cod').AsInteger:= cds_ArqAcao.FieldByName('AAC_AGC_Cod').AsInteger;
+              DM.cds_acoesAgComp.FieldByName('AAC_ARQ_Cod').AsInteger:= cds_ArqAcao.FieldByName('AAC_ARQ_Cod').AsInteger;
+              DM.cds_acoesAgComp.Post;
+              cds_ArqAcao.Next;
+            end;
+        end;
+
       OutHandleIni:= FindWindow('TF_ProtocoloIni',nil);
       SendMessage(OutHandleIni, WM_SALVO, 0, 0);
       OutHandleIni:= FindWindow('TF_Sobre',nil);
@@ -73,13 +126,27 @@ begin
 end;
 
 procedure TF_CadAgendaCompromisso.act_VincularArqExecute(Sender: TObject);
+var
+  filtro: string;
 begin
   inherited;
   with TClientDataSet.Create(nil) do
     begin
       try
         Data:= TF_CadAnArquivo.IniciaPesquisaArquivo;
-        DM.cds_AgendaCompromisso.FieldByName('AGC_ARQ_Cod').AsInteger:= FieldByName('Codigo').AsInteger;
+        //DM.cds_AgendaCompromisso.FieldByName('AGC_ARQ_Cod').AsInteger:= FieldByName('Codigo').AsInteger;
+        if FieldByName('Codigo').AsInteger <> 0 then
+          begin
+            filtro:= cds_ArqAcao.Filter;
+            cds_ArqAcao.Filtered:= False;
+            cds_ArqAcao.Insert;
+            //cds_ArqAcao.FieldByName('AAC_Cod').AsInteger:= cds_ArqAcao.RecordCount; //Para nao erro
+            cds_ArqAcao.FieldByName('AAC_AGC_Cod').AsInteger:= StrToInt(dbedt_AGC_Cod.Text);
+            cds_ArqAcao.FieldByName('AAC_ARQ_Cod').AsInteger:= FieldByName('Codigo').AsInteger;
+            cds_ArqAcao.Post;
+            cds_ArqAcao.Filter:= filtro;
+            cds_ArqAcao.Filtered:= True;
+          end;
       finally
         Free;
       end;
@@ -104,6 +171,15 @@ begin
     end;
   if (AnStatus = dsInsert) and (not FSobre) then
     cbb_AGC_Data.Date:= Date;
+
+  cds_Arquivo.Data:= DM.cds_arquivo.Data;
+  cds_ArqAcao.Data:= DM.cds_acoesAgComp.Data;
+  cds_ArqAcao.Filtered:= False;
+  cds_ArqAcao.Filter:= 'AAC_AGC_Cod = '+Trim(dbedt_AGC_Cod.Text);
+  cds_ArqAcao.Filtered:= True;
+
+  if cds_ArqAcao.IsEmpty then
+    Self.Height:= Self.Height - pnl_ArquivosVinculados.Height;
 end;
 
 class procedure TF_CadAgendaCompromisso.IniciaCad(AHandle: THandle;
@@ -156,6 +232,25 @@ begin
       cbb_AGC_Data.SetFocus;
       Exit;
     end;
+end;
+
+procedure TF_CadAgendaCompromisso.vwl_baseColumn1GetDisplayText(
+  Sender: TcxCustomGridTableItem; ARecord: TcxCustomGridRecord;
+  var AText: string);
+begin
+  inherited;
+  if trim(AText) <> '' then
+    begin
+      cds_Arquivo.Filtered:= False;
+      cds_Arquivo.Filter:= 'ARQ_Cod =' +AText;
+      cds_Arquivo.Filtered:= True;
+      if not cds_Arquivo.IsEmpty then
+        AText:= cds_Arquivo.FieldByName('ARQ_Nome').AsString
+      else
+        AText:= 'Arquivo/Ação não identificado';
+    end
+  else
+    AText:= 'Arquivo/Ação não identificado';
 end;
 
 end.

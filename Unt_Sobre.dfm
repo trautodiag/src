@@ -444,6 +444,7 @@ object F_Sobre: TF_Sobre
               Navigator.Visible = True
               OnCustomDrawCell = vwl_baseCustomDrawCell
               DataController.DataSource = ds_dados
+              DataController.KeyFieldNames = 'AGC_Cod'
               DataController.Summary.DefaultGroupSummaryItems = <>
               DataController.Summary.FooterSummaryItems = <>
               DataController.Summary.SummaryGroups = <>
@@ -456,6 +457,7 @@ object F_Sobre: TF_Sobre
               OptionsData.Inserting = False
               OptionsView.NoDataToDisplayInfoText = 'N'#227'o h'#225' registros'
               OptionsView.ColumnAutoWidth = True
+              OptionsView.ExpandButtonsForEmptyDetails = False
               object vwl_baseColumn1: TcxGridDBColumn
                 Caption = 'Descri'#231#227'o'
                 DataBinding.FieldName = 'AGC_Descricao'
@@ -489,8 +491,32 @@ object F_Sobre: TF_Sobre
                 Visible = False
               end
             end
+            object vwl_associacao: TcxGridDBTableView
+              Navigator.Buttons.CustomButtons = <>
+              DataController.DataSource = ds_associacao
+              DataController.DetailKeyFieldNames = 'AAC_AGC_Cod'
+              DataController.KeyFieldNames = 'AAC_Cod'
+              DataController.MasterKeyFieldNames = 'AGC_Cod'
+              DataController.Summary.DefaultGroupSummaryItems = <>
+              DataController.Summary.FooterSummaryItems = <>
+              DataController.Summary.SummaryGroups = <>
+              OptionsView.ColumnAutoWidth = True
+              OptionsView.GroupByBox = False
+              object vwl_associacaoColumn1: TcxGridDBColumn
+                Caption = 'Arquivo/A'#231#227'o associada'
+                DataBinding.FieldName = 'AAC_ARQ_Cod'
+                PropertiesClassName = 'TcxTextEditProperties'
+                Properties.Alignment.Horz = taLeftJustify
+                OnGetDisplayText = vwl_associacaoColumn1GetDisplayText
+                Options.Editing = False
+                Options.Focusing = False
+              end
+            end
             object tbl_base: TcxGridLevel
               GridView = vwl_base
+              object tbl_associacao: TcxGridLevel
+                GridView = vwl_associacao
+              end
             end
           end
         end
@@ -3197,7 +3223,7 @@ object F_Sobre: TF_Sobre
     Left = 544
     Top = 112
     Bitmap = {
-      494C010101001C00380010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010101001C003C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       00000000000000000000DCDCDC00C1C1C100C4C4C40000000000000000000000
@@ -3377,7 +3403,7 @@ object F_Sobre: TF_Sobre
     Left = 104
     Top = 72
     Bitmap = {
-      494C010103000500200020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103000500240020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -3922,5 +3948,27 @@ object F_Sobre: TF_Sobre
     DataSet = cds_dados
     Left = 240
     Top = 112
+  end
+  object cds_associacao: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 264
+    Top = 136
+  end
+  object ds_associacao: TDataSource
+    DataSet = cds_associacao
+    Left = 320
+    Top = 136
+  end
+  object cds_Arquivo: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 264
+    Top = 184
+  end
+  object ds_Arquivo: TDataSource
+    DataSet = cds_Arquivo
+    Left = 320
+    Top = 184
   end
 end
