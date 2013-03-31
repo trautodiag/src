@@ -8,7 +8,7 @@ uses
   cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters, Menus,
   ActnList, StdCtrls, cxButtons, ExtCtrls, cxPC, db, Unit_DM, Mask, DBCtrls,
   cxContainer, cxEdit, cxMemo, cxDBEdit, cxSpinEdit, cxTextEdit, cxMaskEdit,
-  cxDropDownEdit, cxCalendar, cxCheckBox, Unt_Util;
+  cxDropDownEdit, cxCalendar, cxCheckBox, Unt_Util, Unt_CadAnArquivo, DBClient;
 
 type
   TF_CadAgendaCompromisso = class(TF_BaseCad)
@@ -25,15 +25,20 @@ type
     dbspndt_AGC_Minuto: TcxDBSpinEdit;
     lbl_Obs: TLabel;
     dbm_AGC_Observacao: TcxDBMemo;
+    btn_VincularArq: TcxButton;
+    act_VincularArq: TAction;
     procedure FormShow(Sender: TObject);
     procedure act_SalvarExecute(Sender: TObject);
     procedure act_CancelarExecute(Sender: TObject);
     procedure dbedt_AGC_HoraKeyPress(Sender: TObject; var Key: Char);
+    procedure act_VincularArqExecute(Sender: TObject);
   private
     { Private declarations }
+    FSobre: Boolean;
     function ValidaCadastro: Boolean;
-    procedure SetStatus;       
+    procedure SetStatus;
   public
+    class procedure IniciaCad(AHandle: THandle; const AAtivo: Boolean = true; const AData: TDate = 0);
     { Public declarations }
   end;
 
@@ -67,6 +72,20 @@ begin
     end;
 end;
 
+procedure TF_CadAgendaCompromisso.act_VincularArqExecute(Sender: TObject);
+begin
+  inherited;
+  with TClientDataSet.Create(nil) do
+    begin
+      try
+        Data:= TF_CadAnArquivo.IniciaPesquisaArquivo;
+        DM.cds_AgendaCompromisso.FieldByName('AGC_ARQ_Cod').AsInteger:= FieldByName('Codigo').AsInteger;
+      finally
+        Free;
+      end;
+    end;
+end;
+
 procedure TF_CadAgendaCompromisso.dbedt_AGC_HoraKeyPress(Sender: TObject;
   var Key: Char);
 begin
@@ -79,9 +98,38 @@ begin
   inherited;
   SetStatus;
   if (AnStatus = dsEdit) or (AnStatus = dsInsert) then
-    dbedt_AGC_Descricao.SetFocus;
-  if AnStatus = dsInsert then
+    begin
+      dbedt_AGC_Descricao.SetFocus;
+      act_VincularArq.Enabled:= True;
+    end;
+  if (AnStatus = dsInsert) and (not FSobre) then
     cbb_AGC_Data.Date:= Date;
+end;
+
+class procedure TF_CadAgendaCompromisso.IniciaCad(AHandle: THandle;
+  const AAtivo: Boolean; const AData: TDate);
+var
+  i: Integer;
+begin
+  with Self.Create(application) do
+    begin
+      FSobre:= True;
+      try
+        OutHandle:= AHandle;
+        if not AAtivo then
+          begin
+            for I := 0 to ComponentCount - 1 do
+              if Components[i].InheritsFrom(TControl) then
+                TControl(Components[i]).Enabled:= False;
+          end;
+        DM.cds_AgendaCompromisso.Insert;
+        DM.cds_AgendaCompromissoAGC_Data.AsDateTime:= AData;
+        cbb_AGC_Data.Enabled:= False;
+        showmodal;
+      finally
+        Free;
+      end;
+    end;
 end;
 
 procedure TF_CadAgendaCompromisso.SetStatus;

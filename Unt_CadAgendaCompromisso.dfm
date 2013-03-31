@@ -145,10 +145,24 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
         Height = 89
         Width = 449
       end
+      object btn_VincularArq: TcxButton
+        Left = 303
+        Top = 66
+        Width = 106
+        Height = 25
+        Action = act_VincularArq
+        Anchors = [akTop, akRight]
+        TabOrder = 8
+      end
     end
   end
   inherited act_cadastros: TActionList
     Left = 72
     Top = 152
+    object act_VincularArq: TAction
+      Caption = 'Vincular arquivo...'
+      Enabled = False
+      OnExecute = act_VincularArqExecute
+    end
   end
 end

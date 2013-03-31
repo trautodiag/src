@@ -166,8 +166,16 @@ begin
   case AButtonIndex of
     0:
       begin
-        if AAlertWindow.Tag = 0 then
-          //
+        if DM.cds_AgendaCompromisso.Locate('AGC_Cod', AAlertWindow.Tag, []) then
+          begin
+            DM.cds_AgendaCompromisso.Edit;
+            DM.cds_AgendaCompromisso.FieldByName('AGC_Status').AsBoolean:= True;
+            DM.cds_AgendaCompromisso.Post;
+            if DM.cds_arquivo.Locate('ARQ_Cod', DM.cds_AgendaCompromisso.FieldByName('AGC_ARQ_Cod').AsInteger, []) then
+              ExecFileArq(DM.cds_arquivo.FieldByName('ARQ_Path').AsString, Self.Handle);
+            SendMessage(Handle, WM_SALVO, 0, 0);
+            AAlertWindow.Close;
+          end;
       end;
   end;
 end;
@@ -195,40 +203,26 @@ end;
 
 procedure TF_ProtocoloIni.CriaAtertaCompromisso(ADados: OleVariant);
 begin
-  with TdxAlertWindow.Create(Self) do
-  try
-    OptionsAnimate:= alerta_base.OptionsAnimate;
-    OptionsButtons:= alerta_base.OptionsButtons;
-    OptionsCaptionButtons:= alerta_base.OptionsCaptionButtons;
-    OptionsMessage:= alerta_base.OptionsMessage;
-    OptionsNavigationPanel:= alerta_base.OptionsNavigationPanel;
-    OptionsSize:= alerta_base.OptionsSize;
-    Top:= Screen.Height - OptionsSize.Height;
-    Left:= Screen.Width - OptionsSize.Width;
-    with TClientDataSet.Create(Self) do
-      begin
-        try
-          Data:= ADados;
-          First;
-          while Not eof do
-            begin
-              with MessageList.Add do
-                begin
-                  Text:= FieldByName('ADescricao').AsString;
-                  Caption:= FieldByName('ACaption').AsString;
-                  Tag:= FieldByName('ATag').AsInteger;
-                  ImageIndex:= FieldByName('AIndexImagem').AsInteger;
-                end;
-              Next;
-            end;
-        finally
-          Free;
+  with alerta_base do
+    begin
+      with TClientDataSet.Create(Self) do
+        begin
+          try
+            Data:= ADados;
+            First;
+            while Not eof do
+              begin
+                with Show(FieldByName('ACaption').AsString, FieldByName('ADescricao').AsString, FieldByName('AIndexImagem').AsInteger) do
+                  begin
+                    Tag:= FieldByName('ATag').AsInteger;
+                  end;
+                Next;
+              end;
+          finally
+            Free;
+          end;
         end;
-      end;
-    Show;
-  finally
-    //Free;
-  end;
+    end;
 end;
 
 procedure TF_ProtocoloIni.FormShow(Sender: TObject);
@@ -280,6 +274,7 @@ begin
                   Add('ACaption', ftString, 100);
                   Add('ATag', ftInteger);
                   Add('AIndexImagem', ftInteger);
+                  Add('AArqVinculado', ftInteger);
                 end;
               ClientAux2.CreateDataSet;
               ClientAux.First;
@@ -293,7 +288,8 @@ begin
                       ClientAux2.AppendRecord([ClientAux.FieldByName('AGC_Observacao').AsString,
                                     ClientAux.FieldByName('AGC_Hora').AsString+':'+ClientAux.FieldByName('AGC_Minuto').AsString +' - '+ClientAux.FieldByName('AGC_Descricao').AsString,
                                     ClientAux.FieldByName('AGC_Cod').AsInteger,
-                                    0]);
+                                    0,
+                                    ClientAux.FieldByName('AGC_ARQ_Cod').AsInteger]);
                       voz:= CreateOleObject('SAPI.SpVoice');
                       try
                         voz.Speak(ClientAux.FieldByName('AGC_Descricao').AsString);
@@ -303,7 +299,7 @@ begin
                     end;
                   ClientAux.Next;
                 end;
-              CriaAtertaCompromisso(ClientAux2.Data);   
+              CriaAtertaCompromisso(ClientAux2.Data);
             finally
               ClientAux2.Free;
             end;

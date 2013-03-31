@@ -10,7 +10,7 @@ uses
   DB, cxDBData, DBClient, ImgList, ActnList, cxGridLevel, cxClasses,
   cxGridCustomView, cxGridCustomTableView, cxGridTableView, cxGridDBTableView,
   cxGrid, StdCtrls, cxTextEdit, cxGroupBox, cxRadioGroup, cxButtons, ExtCtrls,
-  cxPC, Unit_DM, Unt_CadAgendaCompromisso;
+  cxPC, Unit_DM, Unt_CadAgendaCompromisso, DateUtils, VarUtils;
 
 type
   TF_CadAnAgendaCompromisso = class(TF_BaseAnCad)
@@ -18,10 +18,16 @@ type
     vwl_baseColumn2: TcxGridDBColumn;
     vwl_baseColumn3: TcxGridDBColumn;
     vwl_baseColumn4: TcxGridDBColumn;
+    stylo_verde: TcxStyle;
+    stylo_vermelho: TcxStyle;
+    vwl_baseColumn5: TcxGridDBColumn;
     procedure FormCreate(Sender: TObject);
     procedure act_ExcluirExecute(Sender: TObject);
     procedure act_NovoExecute(Sender: TObject);
     procedure act_EditarExecute(Sender: TObject);
+    procedure vwl_baseCustomDrawCell(Sender: TcxCustomGridTableView;
+      ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
+      var ADone: Boolean);
   private
     { Private declarations }
   public
@@ -67,7 +73,36 @@ end;
 procedure TF_CadAnAgendaCompromisso.FormCreate(Sender: TObject);
 begin
   SetInformacoes(DM.cds_AgendaCompromisso, 'AGC_Descricao', 'AGC_Cod', 'Data');
-  inherited; 
+  inherited;
+end;
+
+procedure TF_CadAnAgendaCompromisso.vwl_baseCustomDrawCell(
+  Sender: TcxCustomGridTableView; ACanvas: TcxCanvas;
+  AViewInfo: TcxGridTableDataCellViewInfo; var ADone: Boolean);
+begin
+  inherited;
+  if not cds_dados.IsEmpty then
+    begin
+      if (AViewInfo.GridRecord.Values[vwl_baseColumn2.Index] <> null) and
+         (AViewInfo.GridRecord.Values[vwl_baseColumn3.Index] <> null) and
+         (AViewInfo.GridRecord.Values[vwl_baseColumn4.Index] <> null) and
+         (AViewInfo.GridRecord.Values[vwl_baseColumn5.Index] <> null)  then
+        begin
+          if AViewInfo.GridRecord.Values[vwl_baseColumn5.Index] = True then
+            ACanvas.Font.Color:= clGreen
+          else if (not (AViewInfo.GridRecord.Values[vwl_baseColumn5.Index] = True)) and
+            (EncodeDateTime(YearOf(AViewInfo.GridRecord.Values[vwl_baseColumn2.Index]),
+                            MonthOf(AViewInfo.GridRecord.Values[vwl_baseColumn2.Index]),
+                            DayOf(AViewInfo.GridRecord.Values[vwl_baseColumn2.Index]),
+                            AViewInfo.GridRecord.Values[vwl_baseColumn3.Index],
+                            AViewInfo.GridRecord.Values[vwl_baseColumn4.Index],
+                            0,
+                            0) < Now) then
+            ACanvas.Font.Color:= clRed
+          else
+            ACanvas.Font.Color:= clBlack;
+        end;
+    end;
 end;
 
 end.

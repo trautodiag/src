@@ -22,7 +22,7 @@ uses
   Unit_DM, Mask, DBCtrls, DB, DBClient, Unt_CadAnClientes, Unt_CadAnArquivo,
   cxProgressBar, cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage,
   cxDBData, cxGridLevel, cxGridCustomTableView, cxGridTableView,
-  cxGridDBTableView, cxClasses, cxGridCustomView, cxGrid, cxGridStrs;
+  cxGridDBTableView, cxClasses, cxGridCustomView, cxGrid, cxGridStrs, Unt_CadAgendaCompromisso;
 
 type
   TTipoImagem = (img_JPG, img_BMP, img_GIF, img_PNG, img_WMF, img_EMF, img_ICO, img_DES);
@@ -77,6 +77,7 @@ type
     vwl_baseColumn3: TcxGridDBColumn;
     vwl_baseColumn4: TcxGridDBColumn;
     tbl_base: TcxGridLevel;
+    vwl_baseColumn5: TcxGridDBColumn;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -93,6 +94,11 @@ type
     procedure ts_CaixaClienteShow(Sender: TObject);
     procedure pnl_CaixaClienteDblClick(Sender: TObject);
     procedure tab_compromissosDiaShow(Sender: TObject);
+    procedure vwl_baseCustomDrawCell(Sender: TcxCustomGridTableView;
+      ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
+      var ADone: Boolean);
+    procedure act_NovoCompromissoExecute(Sender: TObject);
+    procedure act_ExcluirCompromissoExecute(Sender: TObject);
   private
     FAltura: Integer;
     FHotDia: Integer;
@@ -486,10 +492,36 @@ begin
     act_ExibirCompromissosExecute(Self);
 end;
 
+procedure TF_Sobre.act_ExcluirCompromissoExecute(Sender: TObject);
+begin
+  if MessageDlg('Deseja excluir todos os compromisso do dia?', mtInformation, mbYesNo, 0) = mrYes then
+    begin
+      DM.cds_AgendaCompromisso.Filtered:= False;
+      DM.cds_AgendaCompromisso.Filter:= 'AGC_Data = '+FormatDateTime('yyyy-mm-dd',HotData);
+      DM.cds_AgendaCompromisso.Filtered:= True;
+      if not DM.cds_AgendaCompromisso.IsEmpty then
+        begin
+          while DM.cds_AgendaCompromisso.RecordCount > 0 do
+            begin
+              DM.cds_AgendaCompromisso.Delete;
+            end;
+        end;
+      DM.cds_AgendaCompromisso.Filtered:= False;
+    end;
+end;
+
 procedure TF_Sobre.act_ExibirCompromissosExecute(Sender: TObject);
 begin
   pnl_topcompromissos.Caption:= 'Compromossos do dia '+ IntToStr(HotDia)+ ' de '+ cbbimg_mes.EditText +' de '+ cbb_ano.Text;
   tab_compromissosDia.Show;
+end;
+
+procedure TF_Sobre.act_NovoCompromissoExecute(Sender: TObject);
+begin
+  if HotData >= Date  then
+    TF_CadAgendaCompromisso.IniciaCad(Self.Handle, True, HotData)
+  else
+    MessageDlg('Não é possivél inserir um compromisso por essa funcionalidade com data inferior a data atual.', mtInformation, [mbOK], 0)
 end;
 
 procedure TF_Sobre.AHotButton(Sender: TObject; const Button: TButtonItem);
@@ -498,6 +530,7 @@ begin
     begin
       HotDia:= StrToIntDef(Button.Caption, 0);
       act_ExibirCompromissos.Enabled:= HotDia <> 0;
+      act_NovoCompromisso.Enabled:= HotDia <> 0;
       if HotDia <> 0 then       
         HotData:= EncodeDate(StrToInt(cbb_ano.Text), Integer(cbbimg_mes.EditValue), HotDia);
     end;
@@ -595,6 +628,25 @@ procedure TF_Sobre.ts_CaixaClienteShow(Sender: TObject);
 begin
   dbedt_PRO_CLI_Cod.SetFocus;
   il_status.GetIcon(2, img_status.Picture.Icon);
+end;
+
+procedure TF_Sobre.vwl_baseCustomDrawCell(Sender: TcxCustomGridTableView;
+  ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
+  var ADone: Boolean);
+begin
+  if AViewInfo.GridRecord.Values[vwl_baseColumn5.Index] = True then
+    ACanvas.Font.Color:= clGreen
+  else if (not (AViewInfo.GridRecord.Values[vwl_baseColumn5.Index] = True)) and
+    (EncodeDateTime(YearOf(AViewInfo.GridRecord.Values[vwl_baseColumn2.Index]),
+                    MonthOf(AViewInfo.GridRecord.Values[vwl_baseColumn2.Index]),
+                    DayOf(AViewInfo.GridRecord.Values[vwl_baseColumn2.Index]),
+                    AViewInfo.GridRecord.Values[vwl_baseColumn3.Index],
+                    AViewInfo.GridRecord.Values[vwl_baseColumn4.Index],
+                    0,
+                    0) < Now) then
+    ACanvas.Font.Color:= clRed
+  else
+    ACanvas.Font.Color:= clBlack;
 end;
 
 end.

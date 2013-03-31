@@ -51,6 +51,7 @@ type
     grid_base: TcxGrid;
     cds_dados: TClientDataSet;
     ds_dados: TDataSource;
+    stylo_base: TcxStyleRepository;
     procedure FormShow(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure FormResize(Sender: TObject);
@@ -77,8 +78,6 @@ type
     FIndexImg: Integer;
     FFieldChave: string;
     FFieldData: string;
-    FPesquisa: Boolean;
-    FTabelaDataSource: TDataSource;
     { Private declarations }
     //procedure LimpaIcons;
     procedure AtualizaResgistros(var Msg: TMessage); message WM_SALVO;
@@ -102,6 +101,8 @@ type
     class function IniciaPesquisa(const APesquisa: Boolean = true): OleVariant;
     { Public declarations }
   protected
+    FPesquisa: Boolean;
+    FTabelaDataSource: TDataSource;
     procedure SetInformacoes(ATabelaAtualizar: TClientDataSet; AFieldTab, AFieldChave, AFieldData: string; const AIndexImg:Integer = -1);virtual;
     procedure DblClica(Sender: TObject); virtual;
     //procedure OrganizaIcons(const ATipo: TOrganiza = orgCod);

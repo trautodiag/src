@@ -1,8 +1,6 @@
 inherited F_CadAnArquivo: TF_CadAnArquivo
   Caption = 'Arquivo'
   Constraints.MinWidth = 680
-  ExplicitWidth = 788
-  ExplicitHeight = 521
   PixelsPerInch = 96
   TextHeight = 13
   inherited pgctrl_base: TcxPageControl
@@ -235,7 +233,7 @@ inherited F_CadAnArquivo: TF_CadAnArquivo
   end
   inherited il_base: TImageList
     Bitmap = {
-      494C010105001800700080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010105001800740080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000000200000001000001002000000000000000
       0800000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -17144,6 +17142,9 @@ inherited F_CadAnArquivo: TF_CadAnArquivo
   end
   inherited ds_dados: TDataSource
     Left = 344
+  end
+  inherited stylo_base: TcxStyleRepository
+    PixelsPerInch = 96
   end
   object cds_pasta: TClientDataSet
     Aggregates = <>

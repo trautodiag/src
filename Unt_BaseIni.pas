@@ -91,6 +91,7 @@ type
     alerta_base: TdxAlertWindowManager;
     imgLst_base: TImageList;
     cds_Compromissos: TClientDataSet;
+    ilLst_BotoesMess: TImageList;
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure act_SairExecute(Sender: TObject);
     procedure FormShow(Sender: TObject);

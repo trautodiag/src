@@ -73,7 +73,6 @@ type
     procedure act_DownloadArquivoExecute(Sender: TObject);
     procedure act_PropriedadeArquivoExecute(Sender: TObject);
   private
-    procedure ExecFile(F: String);
     procedure IconFileGrid(AArquivo: string; AImageList: TImageList; AField: TGraphicField);
     procedure DataArquivo;
     procedure DataPasta;
@@ -82,6 +81,7 @@ type
   public
     { Public declarations }
     class procedure Inicia(const ACliente: string);
+    class function IniciaPesquisaArquivo(const APesquisa: Boolean = true): OleVariant;
   end;
 
 var
@@ -216,7 +216,7 @@ begin
               begin
                 if cds_arquivo.FieldByName('ARQ_Sel').AsBoolean then
                   begin
-                    ExecFile(cds_arquivo.FieldByName('ARQ_Path').AsString);
+                    ExecFileArq(cds_arquivo.FieldByName('ARQ_Path').AsString, Self.Handle);
                     cds_arquivo.Next;
                   end
                 else
@@ -435,29 +435,6 @@ begin
   act_PropriedadeArquivo.Enabled:= not cds_arquivo.IsEmpty;
 end;
 
-procedure TF_CadAnArquivo.ExecFile(F: String);
-var
-  r: String;
-begin
-  case ShellExecute(Handle, nil, PChar(F), nil, nil, SW_SHOWNORMAL) of
-    ERROR_FILE_NOT_FOUND: r := 'O arquivo especificado não foi encontrado.';
-    ERROR_PATH_NOT_FOUND: r := 'O caminho especificado não foi encontrado.';
-    ERROR_BAD_FORMAT: r := 'Arquivo inválido.';
-    SE_ERR_ACCESSDENIED: r := 'Acesso negado.';
-    SE_ERR_ASSOCINCOMPLETE: r := 'Nome incompleto ou inválido.';
-    SE_ERR_DDEBUSY: r := 'Outra transação já está sendo executada.';
-    SE_ERR_DDEFAIL: r := 'A transação falhou.';
-    SE_ERR_DDETIMEOUT: r := 'Tempo excedido..';
-    SE_ERR_DLLNOTFOUND: r := 'Dll não encontrada.';
-    SE_ERR_NOASSOC: r := 'Não existe um programa associado ou capaz de abrir este arquivo.';
-    SE_ERR_OOM: r := 'Memória insuficiente para completar a operação.';
-    SE_ERR_SHARE: r := 'Ocorreu um erro de violação de compartilhamento.';
-  else
-    Exit;
-  end;
-  MessageDlg(r, mtError, [mbOK], 0);
-end;
-
 procedure TF_CadAnArquivo.FormCreate(Sender: TObject);
 begin
   VerificaArquivos(DM.cds_arquivo.Data);
@@ -526,6 +503,35 @@ begin
     end;
 end;
 
+class function TF_CadAnArquivo.IniciaPesquisaArquivo(
+  const APesquisa: Boolean): OleVariant;
+begin
+  with Self.Create(Application) do
+    begin
+      try
+        with TClientDataSet.Create(nil) do
+          begin
+            try
+              with FieldDefs do
+                begin
+                  Add('Codigo', ftInteger);
+                  Add('Valor', ftString, 100);
+                end;
+              CreateDataSet;
+              FPesquisa:= APesquisa;
+              ShowModal;
+              AppendRecord([cds_arquivo.FieldByName('ARQ_Cod').AsInteger, cds_arquivo.FieldByName('ARQ_Path').AsString]);
+              Result:= Data;
+            finally
+              Free;
+            end;
+          end;
+      finally
+        Free;
+      end;
+    end;
+end;
+
 procedure TF_CadAnArquivo.vwl_arquivoColumn3PropertiesChange(Sender: TObject);
 begin
   inherited;
@@ -544,7 +550,13 @@ end;
 procedure TF_CadAnArquivo.vwl_arquivoDblClick(Sender: TObject);
 begin
   inherited;
-  ExecFile(cds_arquivo.FieldByName('ARQ_Path').AsString);
+  if FPesquisa then
+    begin
+      Close;
+      Abort;
+    end
+  else
+    ExecFileArq(cds_arquivo.FieldByName('ARQ_Path').AsString, Self.Handle);
 end;
 
 procedure TF_CadAnArquivo.vwl_arquivoTcxGridDBDataControllerTcxDataSummaryFooterSummaryItems0GetText(

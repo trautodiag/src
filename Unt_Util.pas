@@ -3,7 +3,8 @@ unit Unt_Util;
 interface
 
 uses
-  Windows, Classes, Messages, ActiveX, SysUtils, DBClient, db, Forms, Unit_DM, Dialogs;
+  Windows, Classes, Messages, ActiveX, SysUtils, DBClient, db, Forms, Unit_DM, Dialogs,
+  ShellAPI;
 
 const
   WM_SALVO    = WM_APP + 500;
@@ -29,8 +30,32 @@ procedure VerificaPastas(const AData: OleVariant);
 procedure VerificaArquivos(const AData: OleVariant);
 procedure PropriedadeArquivo(AArquivo: String; APropriedades: TStringList);
 function TamanhoDaPastaT(APasta: String): string;
+procedure ExecFileArq(F: String; AHandle: THandle);
 
 implementation
+
+procedure ExecFileArq(F: String; AHandle: THandle);
+var
+  r: String;
+begin
+  case ShellExecute(AHandle, nil, PChar(F), nil, nil, SW_SHOWNORMAL) of
+    ERROR_FILE_NOT_FOUND: r := 'O arquivo especificado não foi encontrado.';
+    ERROR_PATH_NOT_FOUND: r := 'O caminho especificado não foi encontrado.';
+    ERROR_BAD_FORMAT: r := 'Arquivo inválido.';
+    SE_ERR_ACCESSDENIED: r := 'Acesso negado.';
+    SE_ERR_ASSOCINCOMPLETE: r := 'Nome incompleto ou inválido.';
+    SE_ERR_DDEBUSY: r := 'Outra transação já está sendo executada.';
+    SE_ERR_DDEFAIL: r := 'A transação falhou.';
+    SE_ERR_DDETIMEOUT: r := 'Tempo excedido..';
+    SE_ERR_DLLNOTFOUND: r := 'Dll não encontrada.';
+    SE_ERR_NOASSOC: r := 'Não existe um programa associado ou capaz de abrir este arquivo.';
+    SE_ERR_OOM: r := 'Memória insuficiente para completar a operação.';
+    SE_ERR_SHARE: r := 'Ocorreu um erro de violação de compartilhamento.';
+  else
+    Exit;
+  end;
+  MessageDlg(r, mtError, [mbOK], 0);
+end;
 
 function TamanhoDaPastaT(APasta: String): string;
   function TamanhoDaPasta(Pasta: String): Int64;
