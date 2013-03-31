@@ -8,6 +8,7 @@ uses
 
 const
   WM_SALVO    = WM_APP + 500;
+  WM_SALVOV    = WM_APP + 504;
   WM_TRAYICON = WM_APP + 501;
 
   WM_UP    = WM_APP + 502;

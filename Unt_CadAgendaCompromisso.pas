@@ -116,7 +116,7 @@ begin
               cds_ArqAcao.Next;
             end;
         end;
-
+      SendMessage(OutHandle, WM_SALVOV, 0, 0);
       OutHandleIni:= FindWindow('TF_ProtocoloIni',nil);
       SendMessage(OutHandleIni, WM_SALVO, 0, 0);
       OutHandleIni:= FindWindow('TF_Sobre',nil);
@@ -179,7 +179,9 @@ begin
   cds_ArqAcao.Filtered:= True;
 
   if cds_ArqAcao.IsEmpty then
-    Self.Height:= Self.Height - pnl_ArquivosVinculados.Height;
+    Self.Height:= Self.Height - pnl_ArquivosVinculados.Height
+  else
+    pnl_ArquivosVinculados.Visible:= True;
 end;
 
 class procedure TF_CadAgendaCompromisso.IniciaCad(AHandle: THandle;

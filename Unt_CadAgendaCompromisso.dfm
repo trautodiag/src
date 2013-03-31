@@ -11,12 +11,12 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
     Width = 465
     Height = 488
     ExplicitWidth = 465
-    ExplicitHeight = 240
+    ExplicitHeight = 488
     ClientRectBottom = 487
     ClientRectRight = 464
     inherited ts_base: TcxTabSheet
       ExplicitWidth = 463
-      ExplicitHeight = 238
+      ExplicitHeight = 486
       object lbl_cod: TLabel [0]
         Left = 8
         Top = 7
@@ -64,7 +64,7 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
         Top = 453
         Width = 463
         TabOrder = 7
-        ExplicitTop = 205
+        ExplicitTop = 453
         ExplicitWidth = 463
         inherited btn_Salvar: TcxButton
           Left = 271
@@ -201,9 +201,6 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
           Align = alClient
           TabOrder = 1
           LookAndFeel.SkinName = 'Office2010Blue'
-          ExplicitTop = 0
-          ExplicitWidth = 778
-          ExplicitHeight = 399
           object vwl_base: TcxGridDBTableView
             Navigator.Buttons.CustomButtons = <>
             Navigator.Buttons.First.Visible = False
@@ -242,6 +239,8 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
             object vwl_baseColumn1: TcxGridDBColumn
               Caption = 'Arquivo/A'#231#227'o'
               DataBinding.FieldName = 'AAC_ARQ_Cod'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taLeftJustify
               OnGetDisplayText = vwl_baseColumn1GetDisplayText
             end
           end

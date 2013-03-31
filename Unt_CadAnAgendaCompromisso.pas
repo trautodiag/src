@@ -42,7 +42,7 @@ type
       var AText: string);
   private
     { Private declarations }
-    procedure AtualizaResgistrosAss(var Msg: TMessage); message WM_SALVO;
+    procedure AtualizaResgistrosAss(var Msg: TMessage); message WM_SALVOV;
   public
     { Public declarations }
     procedure DblClica(Sender: TObject); override;
@@ -137,14 +137,14 @@ begin
         begin
           if AViewInfo.GridRecord.Values[vwl_baseColumn5.Index] = True then
             ACanvas.Font.Color:= clGreen
-          else if (not (AViewInfo.GridRecord.Values[vwl_baseColumn5.Index] = True)) and
+          else if ((not (AViewInfo.GridRecord.Values[vwl_baseColumn5.Index] = True)) and
             (EncodeDateTime(YearOf(AViewInfo.GridRecord.Values[vwl_baseColumn2.Index]),
                             MonthOf(AViewInfo.GridRecord.Values[vwl_baseColumn2.Index]),
                             DayOf(AViewInfo.GridRecord.Values[vwl_baseColumn2.Index]),
                             AViewInfo.GridRecord.Values[vwl_baseColumn3.Index],
                             AViewInfo.GridRecord.Values[vwl_baseColumn4.Index],
                             0,
-                            0) < Now) then
+                            0) < Now)) or (AViewInfo.GridRecord.Values[vwl_baseColumn5.Index] = null) then
             ACanvas.Font.Color:= clRed
           else
             ACanvas.Font.Color:= clBlack;

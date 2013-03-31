@@ -2,6 +2,7 @@ inherited F_CadAnAgendaCompromisso: TF_CadAnAgendaCompromisso
   Caption = 'Agenda de compromissos'
   ClientWidth = 570
   ExplicitWidth = 586
+  ExplicitHeight = 525
   PixelsPerInch = 96
   TextHeight = 13
   inherited pgctrl_base: TcxPageControl
@@ -44,8 +45,6 @@ inherited F_CadAnAgendaCompromisso: TF_CadAnAgendaCompromisso
         inherited grid_base: TcxGrid
           Width = 568
           LookAndFeel.SkinName = 'Office2007Blue'
-          ExplicitLeft = -1
-          ExplicitTop = -2
           ExplicitWidth = 568
           inherited vwl_base: TcxGridDBTableView
             OnCustomDrawCell = vwl_baseCustomDrawCell
@@ -116,7 +115,7 @@ inherited F_CadAnAgendaCompromisso: TF_CadAnAgendaCompromisso
   end
   inherited il_base: TImageList
     Bitmap = {
-      494C010105001800680080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101050018006C0080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000000200000001000001002000000000000000
       0800000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
