@@ -1,7 +1,6 @@
 inherited F_CadAnAgendaCompromisso: TF_CadAnAgendaCompromisso
   Caption = 'Agenda de compromissos'
   ClientWidth = 570
-  ExplicitTop = -71
   ExplicitWidth = 586
   PixelsPerInch = 96
   TextHeight = 13
@@ -44,9 +43,13 @@ inherited F_CadAnAgendaCompromisso: TF_CadAnAgendaCompromisso
         ExplicitWidth = 568
         inherited grid_base: TcxGrid
           Width = 568
+          LookAndFeel.SkinName = 'Office2007Blue'
+          ExplicitLeft = -1
+          ExplicitTop = -2
           ExplicitWidth = 568
           inherited vwl_base: TcxGridDBTableView
             OnCustomDrawCell = vwl_baseCustomDrawCell
+            OptionsView.ExpandButtonsForEmptyDetails = False
             object vwl_baseColumn1: TcxGridDBColumn
               Caption = 'Descri'#231#227'o'
               DataBinding.FieldName = 'AGC_Descricao'
@@ -80,13 +83,40 @@ inherited F_CadAnAgendaCompromisso: TF_CadAnAgendaCompromisso
               Visible = False
             end
           end
+          object vwl_associacao: TcxGridDBTableView [1]
+            Navigator.Buttons.CustomButtons = <>
+            DataController.DataSource = ds_associacao
+            DataController.DetailKeyFieldNames = 'AAC_AGC_Cod'
+            DataController.KeyFieldNames = 'AAC_Cod'
+            DataController.MasterKeyFieldNames = 'AGC_Cod'
+            DataController.Summary.DefaultGroupSummaryItems = <>
+            DataController.Summary.FooterSummaryItems = <>
+            DataController.Summary.SummaryGroups = <>
+            OptionsView.ColumnAutoWidth = True
+            OptionsView.ExpandButtonsForEmptyDetails = False
+            OptionsView.GroupByBox = False
+            object vwl_associacaoColumn1: TcxGridDBColumn
+              Caption = 'Arquivo/A'#231#227'o associada'
+              DataBinding.FieldName = 'AAC_ARQ_Cod'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taLeftJustify
+              OnGetDisplayText = vwl_associacaoColumn1GetDisplayText
+              Options.Editing = False
+              Options.Focusing = False
+            end
+          end
+          inherited tbl_base: TcxGridLevel
+            object tbl_associacao: TcxGridLevel
+              GridView = vwl_associacao
+            end
+          end
         end
       end
     end
   end
   inherited il_base: TImageList
     Bitmap = {
-      494C010105001800640080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010105001800680080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000000200000001000001002000000000000000
       0800000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -16989,6 +17019,9 @@ inherited F_CadAnAgendaCompromisso: TF_CadAnAgendaCompromisso
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000
       000000000000}
   end
+  inherited cds_dados: TClientDataSet
+    Top = 136
+  end
   inherited stylo_base: TcxStyleRepository
     PixelsPerInch = 96
     object stylo_verde: TcxStyle
@@ -17007,5 +17040,27 @@ inherited F_CadAnAgendaCompromisso: TF_CadAnAgendaCompromisso
       Font.Name = 'Tahoma'
       Font.Style = []
     end
+  end
+  object cds_associacao: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 256
+    Top = 224
+  end
+  object ds_associacao: TDataSource
+    DataSet = cds_associacao
+    Left = 312
+    Top = 224
+  end
+  object cds_Arquivo: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 256
+    Top = 272
+  end
+  object ds_Arquivo: TDataSource
+    DataSet = cds_Arquivo
+    Left = 312
+    Top = 272
   end
 end

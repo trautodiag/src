@@ -428,4 +428,28 @@ object DM: TDM
     Left = 232
     Top = 240
   end
+  object cds_acoesAgComp: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    BeforeInsert = cds_acoesAgCompBeforeInsert
+    AfterCancel = cds_acoesAgCompAfterCancel
+    AfterDelete = cds_acoesAgCompAfterDelete
+    OnNewRecord = cds_acoesAgCompNewRecord
+    Left = 352
+    Top = 176
+    object cds_acoesAgCompAAC_Cod: TAutoIncField
+      FieldName = 'AAC_Cod'
+    end
+    object cds_acoesAgCompAAC_AGC_Cod: TIntegerField
+      FieldName = 'AAC_AGC_Cod'
+    end
+    object cds_acoesAgCompAAC_ARQ_Cod: TIntegerField
+      FieldName = 'AAC_ARQ_Cod'
+    end
+  end
+  object ds_acoesAgComp: TDataSource
+    DataSet = cds_acoesAgComp
+    Left = 352
+    Top = 240
+  end
 end

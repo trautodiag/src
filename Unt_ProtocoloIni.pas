@@ -171,10 +171,24 @@ begin
             DM.cds_AgendaCompromisso.Edit;
             DM.cds_AgendaCompromisso.FieldByName('AGC_Status').AsBoolean:= True;
             DM.cds_AgendaCompromisso.Post;
-            if DM.cds_arquivo.Locate('ARQ_Cod', DM.cds_AgendaCompromisso.FieldByName('AGC_ARQ_Cod').AsInteger, []) then
-              ExecFileArq(DM.cds_arquivo.FieldByName('ARQ_Path').AsString, Self.Handle);
+
+            DM.cds_acoesAgComp.Filtered:= False;
+            DM.cds_acoesAgComp.Filter:= 'AAC_AGC_Cod = '+IntToStr(AAlertWindow.Tag);
+            DM.cds_acoesAgComp.Filtered:= True;
+
+            if not DM.cds_acoesAgComp.IsEmpty then
+              begin
+                DM.cds_acoesAgComp.First;
+                while not DM.cds_acoesAgComp.Eof do
+                  begin
+                    if DM.cds_arquivo.Locate('ARQ_Cod', DM.cds_acoesAgComp.FieldByName('AAC_ARQ_Cod').AsInteger, []) then
+                      ExecFileArq(DM.cds_arquivo.FieldByName('ARQ_Path').AsString, Self.Handle);
+                    DM.cds_acoesAgComp.Next;
+                  end;
+              end;
             SendMessage(Handle, WM_SALVO, 0, 0);
             AAlertWindow.Close;
+            DM.cds_acoesAgComp.Filtered:= False;
           end;
       end;
   end;
