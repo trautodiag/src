@@ -419,8 +419,8 @@ object DM: TDM
     object cds_AgendaCompromissoAGC_Alerta: TBooleanField
       FieldName = 'AGC_Alerta'
     end
-    object cds_AgendaCompromissoAGC_ARQ_Cod: TIntegerField
-      FieldName = 'AGC_ARQ_Cod'
+    object cds_AgendaCompromissoAGC_ArqExec: TBooleanField
+      FieldName = 'AGC_ArqExec'
     end
   end
   object ds_AgendaCompromisso: TDataSource

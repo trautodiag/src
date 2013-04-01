@@ -172,20 +172,24 @@ begin
             DM.cds_AgendaCompromisso.FieldByName('AGC_Status').AsBoolean:= True;
             DM.cds_AgendaCompromisso.Post;
 
-            DM.cds_acoesAgComp.Filtered:= False;
-            DM.cds_acoesAgComp.Filter:= 'AAC_AGC_Cod = '+IntToStr(AAlertWindow.Tag);
-            DM.cds_acoesAgComp.Filtered:= True;
-
-            if not DM.cds_acoesAgComp.IsEmpty then
+            if not DM.cds_AgendaCompromisso.FieldByName('AGC_ArqExec').AsBoolean then
               begin
-                DM.cds_acoesAgComp.First;
-                while not DM.cds_acoesAgComp.Eof do
+                DM.cds_acoesAgComp.Filtered:= False;
+                DM.cds_acoesAgComp.Filter:= 'AAC_AGC_Cod = '+IntToStr(AAlertWindow.Tag);
+                DM.cds_acoesAgComp.Filtered:= True;
+
+                if not DM.cds_acoesAgComp.IsEmpty then
                   begin
-                    if DM.cds_arquivo.Locate('ARQ_Cod', DM.cds_acoesAgComp.FieldByName('AAC_ARQ_Cod').AsInteger, []) then
-                      ExecFileArq(DM.cds_arquivo.FieldByName('ARQ_Path').AsString, Self.Handle);
-                    DM.cds_acoesAgComp.Next;
+                    DM.cds_acoesAgComp.First;
+                    while not DM.cds_acoesAgComp.Eof do
+                      begin
+                        if DM.cds_arquivo.Locate('ARQ_Cod', DM.cds_acoesAgComp.FieldByName('AAC_ARQ_Cod').AsInteger, []) then
+                          ExecFileArq(DM.cds_arquivo.FieldByName('ARQ_Path').AsString, Self.Handle);
+                        DM.cds_acoesAgComp.Next;
+                      end;
                   end;
               end;
+
             SendMessage(Handle, WM_SALVO, 0, 0);
             AAlertWindow.Close;
             DM.cds_acoesAgComp.Filtered:= False;
@@ -288,7 +292,7 @@ begin
                   Add('ACaption', ftString, 100);
                   Add('ATag', ftInteger);
                   Add('AIndexImagem', ftInteger);
-                  Add('AArqVinculado', ftInteger);
+                  Add('AArqExecuta', ftBoolean);
                 end;
               ClientAux2.CreateDataSet;
               ClientAux.First;
@@ -303,13 +307,35 @@ begin
                                     ClientAux.FieldByName('AGC_Hora').AsString+':'+ClientAux.FieldByName('AGC_Minuto').AsString +' - '+ClientAux.FieldByName('AGC_Descricao').AsString,
                                     ClientAux.FieldByName('AGC_Cod').AsInteger,
                                     0,
-                                    ClientAux.FieldByName('AGC_ARQ_Cod').AsInteger]);
+                                    ClientAux.FieldByName('AGC_ArqExec').AsBoolean]);
                       voz:= CreateOleObject('SAPI.SpVoice');
                       try
                         voz.Speak(ClientAux.FieldByName('AGC_Descricao').AsString);
                       except
                         //
-                      end;                               
+                      end;
+
+                      if ClientAux.FieldByName('AGC_ArqExec').AsBoolean then
+                        begin
+                          if DM.cds_AgendaCompromisso.Locate('AGC_Cod', ClientAux.FieldByName('AGC_Cod').AsInteger, []) then
+                            begin
+                              DM.cds_acoesAgComp.Filtered:= False;
+                              DM.cds_acoesAgComp.Filter:= 'AAC_AGC_Cod = '+IntToStr(ClientAux.FieldByName('AGC_Cod').AsInteger);
+                              DM.cds_acoesAgComp.Filtered:= True;
+
+                              if not DM.cds_acoesAgComp.IsEmpty then
+                                begin
+                                  DM.cds_acoesAgComp.First;
+                                  while not DM.cds_acoesAgComp.Eof do
+                                    begin
+                                      if DM.cds_arquivo.Locate('ARQ_Cod', DM.cds_acoesAgComp.FieldByName('AAC_ARQ_Cod').AsInteger, []) then
+                                        ExecFileArq(DM.cds_arquivo.FieldByName('ARQ_Path').AsString, Self.Handle);
+                                      DM.cds_acoesAgComp.Next;
+                                    end;
+                                end;
+                              DM.cds_acoesAgComp.Filtered:= False;
+                            end;
+                         end;
                     end;
                   ClientAux.Next;
                 end;

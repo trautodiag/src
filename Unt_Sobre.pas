@@ -266,11 +266,16 @@ begin
                                 Caption:= IntToStr(ADias);
                               end;
                           end;
-                      if (DayOfTheMonth(now) = ADias) then
+                      if (DayOfTheMonth(now) = ADias) and (DayOfTheMonth(now) <> 1) then
                         begin
                           ImageIndex:= 0;
                           Hint:= 'Hoje';
-                        end;
+                        end
+                      else if (Trim(Caption) = '1') then
+                        begin
+                          ImageIndex:= 0;
+                          Hint:= 'Hoje';
+                        end
                     end;
                 end;
             end;

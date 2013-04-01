@@ -2,6 +2,7 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
   Caption = 'Cadastro de compromissos'
   ClientHeight = 488
   ClientWidth = 465
+  OnResize = FormResize
   OnShow = FormShow
   ExplicitWidth = 471
   ExplicitHeight = 516
@@ -192,6 +193,16 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
             Anchors = [akTop, akRight]
             TabOrder = 1
           end
+          object cxDBCheckBox2: TcxDBCheckBox
+            Left = 303
+            Top = 8
+            Caption = 'Executar auto'
+            DataBinding.DataField = 'AGC_ArqExec'
+            DataBinding.DataSource = DM.ds_AgendaCompromisso
+            TabOrder = 2
+            Transparent = True
+            Width = 98
+          end
         end
         object grid_base: TcxGrid
           Left = 0
@@ -278,6 +289,7 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
   end
   object ds_ArqAcao: TDataSource
     DataSet = cds_ArqAcao
+    OnStateChange = ds_ArqAcaoStateChange
     Left = 192
     Top = 312
   end

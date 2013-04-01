@@ -37,6 +37,10 @@ object F_Sobre: TF_Sobre
     object ts_sobre: TcxTabSheet
       Caption = 'ts_sobre'
       ImageIndex = 0
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object pnl_sobre: TPanel
         Left = 0
         Top = 0
@@ -246,6 +250,10 @@ object F_Sobre: TF_Sobre
     object tab_Calendario: TcxTabSheet
       Caption = 'tab_Calendario'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object pnl_top: TPanel
         Left = 0
         Top = 0
@@ -526,6 +534,10 @@ object F_Sobre: TF_Sobre
       Caption = 'ts_CaixaCliente'
       ImageIndex = 4
       OnShow = ts_CaixaClienteShow
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object pnl_CaixaCliente: TPanel
         Left = 0
         Top = 49
@@ -3223,7 +3235,7 @@ object F_Sobre: TF_Sobre
     Left = 544
     Top = 112
     Bitmap = {
-      494C010101001C003C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010101001C00400010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       00000000000000000000DCDCDC00C1C1C100C4C4C40000000000000000000000
@@ -3403,7 +3415,7 @@ object F_Sobre: TF_Sobre
     Left = 104
     Top = 72
     Bitmap = {
-      494C010103000500240020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103000500280020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

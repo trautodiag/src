@@ -44,6 +44,7 @@ type
     act_abriVinculo: TAction;
     ds_Arquivo: TDataSource;
     cds_Arquivo: TClientDataSet;
+    cxDBCheckBox2: TcxDBCheckBox;
     procedure FormShow(Sender: TObject);
     procedure act_SalvarExecute(Sender: TObject);
     procedure act_CancelarExecute(Sender: TObject);
@@ -53,6 +54,8 @@ type
     procedure act_abriVinculoExecute(Sender: TObject);
     procedure vwl_baseColumn1GetDisplayText(Sender: TcxCustomGridTableItem;
       ARecord: TcxCustomGridRecord; var AText: string);
+    procedure FormResize(Sender: TObject);
+    procedure ds_ArqAcaoStateChange(Sender: TObject);
   private
     { Private declarations }
     FSobre: Boolean;
@@ -77,7 +80,10 @@ begin
   if not pnl_ArquivosVinculados.Visible then
     Self.Height:= Self.Height - pnl_ArquivosVinculados.Height
   else
-    Self.Height:= Self.Height + pnl_ArquivosVinculados.Height;
+    begin
+      Self.Height:= Self.Height + pnl_ArquivosVinculados.Height;
+      pnl_Base.Align:= alBottom;
+    end;
 
   Self.Top:= (Screen.Height - Self.Height) div 2;
 end;
@@ -101,18 +107,22 @@ begin
   if ValidaCadastro then
     begin
       DM.cds_AgendaCompromissoAGC_Alerta.asBoolean:= False;
+      DM.cds_AgendaCompromissoAGC_Status.asBoolean:= False;
       DM.cds_AgendaCompromissoData.AsDateTime:= Now;
       DM.cds_AgendaCompromisso.Post;
 
-      if not cds_ArqAcao.IsEmpty then
+      if (not cds_ArqAcao.IsEmpty) or (cds_ArqAcao.ChangeCount > 0) then
         begin
           cds_ArqAcao.First;
           while not cds_ArqAcao.Eof do
             begin
-              DM.cds_acoesAgComp.Insert;
-              DM.cds_acoesAgComp.FieldByName('AAC_AGC_Cod').AsInteger:= cds_ArqAcao.FieldByName('AAC_AGC_Cod').AsInteger;
-              DM.cds_acoesAgComp.FieldByName('AAC_ARQ_Cod').AsInteger:= cds_ArqAcao.FieldByName('AAC_ARQ_Cod').AsInteger;
-              DM.cds_acoesAgComp.Post;
+              if Not DM.cds_acoesAgComp.Locate('AAC_AGC_Cod;AAC_ARQ_Cod', VarArrayOf([cds_ArqAcao.FieldByName('AAC_AGC_Cod').AsInteger, cds_ArqAcao.FieldByName('AAC_ARQ_Cod').AsInteger]), []) then
+                begin
+                  DM.cds_acoesAgComp.Insert;
+                  DM.cds_acoesAgComp.FieldByName('AAC_AGC_Cod').AsInteger:= cds_ArqAcao.FieldByName('AAC_AGC_Cod').AsInteger;
+                  DM.cds_acoesAgComp.FieldByName('AAC_ARQ_Cod').AsInteger:= cds_ArqAcao.FieldByName('AAC_ARQ_Cod').AsInteger;
+                  DM.cds_acoesAgComp.Post;
+                end;
               cds_ArqAcao.Next;
             end;
         end;
@@ -160,6 +170,20 @@ begin
   if not (Key in['0'..'9',Chr(8)]) then Key:= #0;
 end;
 
+procedure TF_CadAgendaCompromisso.ds_ArqAcaoStateChange(Sender: TObject);
+begin
+  inherited;
+  act_ExcluirArquivo.Enabled:= (cds_ArqAcao.RecordCount > 0) and (DM.cds_AgendaCompromisso.State in dsEditModes);  
+end;
+
+procedure TF_CadAgendaCompromisso.FormResize(Sender: TObject);
+begin
+  inherited;
+  pnl_ArquivosVinculados.Align:= alNone;
+  pnl_Base.Align:= alBottom;
+  pnl_ArquivosVinculados.Align:= alBottom;
+end;
+
 procedure TF_CadAgendaCompromisso.FormShow(Sender: TObject);
 begin
   inherited;
@@ -170,7 +194,10 @@ begin
       act_VincularArq.Enabled:= True;
     end;
   if (AnStatus = dsInsert) and (not FSobre) then
-    cbb_AGC_Data.Date:= Date;
+    begin
+      cbb_AGC_Data.Date:= Date;
+      DM.cds_AgendaCompromissoAGC_ArqExec.asBoolean:= False;
+    end;
 
   cds_Arquivo.Data:= DM.cds_arquivo.Data;
   cds_ArqAcao.Data:= DM.cds_acoesAgComp.Data;
