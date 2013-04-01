@@ -103,12 +103,12 @@ type
     cds_AgendaCompromissoAGC_Hora: TIntegerField;
     cds_AgendaCompromissoAGC_Minuto: TIntegerField;
     cds_AgendaCompromissoAGC_Alerta: TBooleanField;
-    cds_AgendaCompromissoAGC_ARQ_Cod: TIntegerField;
     cds_acoesAgComp: TClientDataSet;
     ds_acoesAgComp: TDataSource;
     cds_acoesAgCompAAC_Cod: TAutoIncField;
     cds_acoesAgCompAAC_AGC_Cod: TIntegerField;
     cds_acoesAgCompAAC_ARQ_Cod: TIntegerField;
+    cds_AgendaCompromissoAGC_ArqExec: TBooleanField;
     procedure DataModuleCreate(Sender: TObject);
     procedure cds_documentosNewRecord(DataSet: TDataSet);
     procedure cds_documentosAfterDelete(DataSet: TDataSet);
