@@ -7,10 +7,11 @@ uses
   Dialogs, Unt_BaseAnCad, dxSkinsCore, dxSkinOffice2010Blue, dxSkinscxPCPainter,
   cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters, Menus,
   cxContainer, cxEdit, ImgList, ActnList, cxScrollBox, StdCtrls, cxTextEdit,
-  cxGroupBox, cxRadioGroup, cxButtons, ExtCtrls, cxPC, Unt_CadClientes, Unt_ImagePanel,
+  cxGroupBox, cxRadioGroup, cxButtons, ExtCtrls, cxPC, Unt_CadClientes, 
   Unt_Util, Unit_DM, cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage,
   DB, cxDBData, cxLocalization, cxGridLevel, cxClasses, cxGridCustomView,
-  cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid, DBClient;
+  cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid, DBClient,
+  dxSkinOffice2007Blue;
 
 type
   TF_CadAnClientes = class(TF_BaseAnCad)

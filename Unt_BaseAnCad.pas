@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ActnList, ComCtrls, StdCtrls, Buttons, ExtCtrls, DBClient, Unt_Util,
-  ImgList, Unt_ImagePanel, db, StrUtils, dxSkinsCore, dxSkinOffice2010Blue,
+  ImgList, db, StrUtils, dxSkinsCore, dxSkinOffice2010Blue,
   dxSkinscxPCPainter, cxGraphics, cxControls, cxLookAndFeels,
   cxLookAndFeelPainters, Menus, cxContainer, cxEdit, cxGroupBox, cxRadioGroup,
   cxButtons, cxPC, cxTextEdit, cxScrollBox, cxStyles, cxCustomData, cxFilter,

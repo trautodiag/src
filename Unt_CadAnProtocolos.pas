@@ -8,7 +8,7 @@ uses
   cxLookAndFeelPainters, dxSkinsCore, dxSkinOffice2010Blue, dxSkinscxPCPainter,
   Menus, cxContainer, cxEdit, ImgList, ActnList, cxScrollBox, StdCtrls,
   cxTextEdit, cxGroupBox, cxRadioGroup, cxButtons, ExtCtrls, cxPC, Unt_CadProtocolos,
-  Unt_ImagePanel, Unit_DM, Unt_Util, DB, DBClient, cxStyles, cxCustomData,
+  Unit_DM, Unt_Util, DB, DBClient, cxStyles, cxCustomData,
   cxFilter, cxData, cxDataStorage, cxDBData, cxLocalization, cxGridLevel,
   cxClasses, cxGridCustomView, cxGridCustomTableView, cxGridTableView,
   cxGridDBTableView, cxGrid, dxSkinBlack, dxSkinBlue, dxSkinBlueprint,

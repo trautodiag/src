@@ -12,7 +12,10 @@ inherited F_CadProtocolos: TF_CadProtocolos
     ExplicitWidth = 542
     ClientRectRight = 541
     inherited ts_base: TcxTabSheet
+      ExplicitLeft = 0
+      ExplicitTop = 0
       ExplicitWidth = 540
+      ExplicitHeight = 0
       inherited pnl_Base: TPanel
         Width = 540
         TabOrder = 3
@@ -350,7 +353,7 @@ inherited F_CadProtocolos: TF_CadProtocolos
     Left = 208
     Top = 160
     Bitmap = {
-      494C010101001800680080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101010018006C0080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000000200008000000001002000000000000000
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
