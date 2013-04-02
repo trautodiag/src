@@ -148,15 +148,7 @@ begin
                   DM.cds_acoesAgComp.FieldByName('AAC_ARQ_Cod').AsInteger:= cds_ArqAcao.FieldByName('AAC_ARQ_Cod').AsInteger;
                   DM.cds_acoesAgComp.FieldByName('AAC_Tipo').AsInteger:= cds_ArqAcao.FieldByName('AAC_Tipo').AsInteger;
                   DM.cds_acoesAgComp.Post;
-                end
-              else if Not DM.cds_acoesAgComp.Locate('AAC_AGC_Cod;AAC_ARQ_Cod', VarArrayOf([cds_ArqAcao.FieldByName('AAC_AGC_Cod').AsInteger, cs_CapturaTela]), []) then
-               begin
-                  DM.cds_acoesAgComp.Insert;
-                  DM.cds_acoesAgComp.FieldByName('AAC_AGC_Cod').AsInteger:= cds_ArqAcao.FieldByName('AAC_AGC_Cod').AsInteger;
-                  DM.cds_acoesAgComp.FieldByName('AAC_ARQ_Cod').AsInteger:= cds_ArqAcao.FieldByName('AAC_ARQ_Cod').AsInteger;
-                  DM.cds_acoesAgComp.FieldByName('AAC_Tipo').AsInteger:= cds_ArqAcao.FieldByName('AAC_Tipo').AsInteger;
-                  DM.cds_acoesAgComp.Post;
-               end;     
+                end;
               cds_ArqAcao.Next;
             end;
         end;
