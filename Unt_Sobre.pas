@@ -675,7 +675,13 @@ begin
       cds_Arquivo.Filtered:= True;
       if not cds_Arquivo.IsEmpty then
         AText:= cds_Arquivo.FieldByName('ARQ_Nome').AsString
-      else
+      else if StrToInt(AText) = cs_CapturaTela then
+        begin
+          case StrToInt(AText) of
+            -1 : AText:= 'Captura de tela';
+          end;
+        end
+      else           
         AText:= 'Arquivo/Ação não identificado';
     end
   else
