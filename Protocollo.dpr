@@ -24,7 +24,8 @@ uses
   Unt_CadAnProtocolos in 'Unt_CadAnProtocolos.pas' {F_CadAnProtocolos},
   Unt_CadAnArquivo in 'Unt_CadAnArquivo.pas' {F_CadAnArquivo},
   Unt_CadAnAgendaCompromisso in 'Unt_CadAnAgendaCompromisso.pas' {F_CadAnAgendaCompromisso},
-  Unt_CadAgendaCompromisso in 'Unt_CadAgendaCompromisso.pas' {F_CadAgendaCompromisso};
+  Unt_CadAgendaCompromisso in 'Unt_CadAgendaCompromisso.pas' {F_CadAgendaCompromisso},
+  Unt_FuncoesPredefinidas in 'Unt_FuncoesPredefinidas.pas' {F_FuncoesPredefinidas};
 
 {$R *.res}
 

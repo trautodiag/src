@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Classes, Messages, ActiveX, SysUtils, DBClient, db, Forms, Unit_DM, Dialogs,
-  ShellAPI;
+  ShellAPI, Graphics, GraphUtil;
 
 const
   WM_SALVO    = WM_APP + 500;
@@ -24,6 +24,13 @@ const
   cs_AnEdit = 0;
   cs_AnInsert = 1;
 
+  cs_AAC_Tipo_ExecArq = 1;
+  cs_AAC_Tipo_FuncPre = 2;
+
+  cs_CapturaTela = -1;
+
+  //cs_FuncoesPre = [cs_CapturaTela];
+
 function NovoGuid: string;
 function ValidaSelecao(const AData: OleVariant; const AField: TField): Boolean;
 Function isFolderEmpty(szPath: String): Boolean;
@@ -33,7 +40,29 @@ procedure PropriedadeArquivo(AArquivo: String; APropriedades: TStringList);
 function TamanhoDaPastaT(APasta: String): string;
 procedure ExecFileArq(F: String; AHandle: THandle);
 
+//Funções do sistema
+function CapituraTela: TBitmap;
+
 implementation
+
+function CapituraTela: TBitmap;
+var
+  dc: HDC;
+  cv: TCanvas;
+begin
+  Result:= TBitmap.Create;
+  Result.Width:= Screen.Width;
+  Result.Height:= Screen.Height;
+  dc:= GetDC(0);
+  cv:= TCanvas.Create;
+  try
+    cv.Handle:= dc;
+    Result.Canvas.CopyRect(Rect(0, 0, Screen.Width, Screen.Height), cv, Rect(0, 0, Screen.Width, Screen.Height));
+  finally
+    cv.Free;
+  end;
+  ReleaseDC(0, dc);
+end;
 
 procedure ExecFileArq(F: String; AHandle: THandle);
 var

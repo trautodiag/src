@@ -109,6 +109,7 @@ type
     cds_acoesAgCompAAC_AGC_Cod: TIntegerField;
     cds_acoesAgCompAAC_ARQ_Cod: TIntegerField;
     cds_AgendaCompromissoAGC_ArqExec: TBooleanField;
+    cds_acoesAgCompAAC_Tipo: TIntegerField;
     procedure DataModuleCreate(Sender: TObject);
     procedure cds_documentosNewRecord(DataSet: TDataSet);
     procedure cds_documentosAfterDelete(DataSet: TDataSet);

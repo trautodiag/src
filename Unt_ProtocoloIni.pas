@@ -328,10 +328,26 @@ begin
                                   DM.cds_acoesAgComp.First;
                                   while not DM.cds_acoesAgComp.Eof do
                                     begin
-                                      if DM.cds_arquivo.Locate('ARQ_Cod', DM.cds_acoesAgComp.FieldByName('AAC_ARQ_Cod').AsInteger, []) then
-                                        ExecFileArq(DM.cds_arquivo.FieldByName('ARQ_Path').AsString, Self.Handle);
+                                      case DM.cds_acoesAgComp.FieldByName('AAC_Tipo').AsInteger of
+                                        cs_AAC_Tipo_ExecArq:
+                                          begin
+                                            if DM.cds_arquivo.Locate('ARQ_Cod', DM.cds_acoesAgComp.FieldByName('AAC_ARQ_Cod').AsInteger, []) then
+                                              ExecFileArq(DM.cds_arquivo.FieldByName('ARQ_Path').AsString, Self.Handle);                                      
+                                          end;                                
+                                        cs_AAC_Tipo_FuncPre:
+                                          begin
+                                            case DM.cds_acoesAgComp.FieldByName('AAC_ARQ_Cod').AsInteger of
+                                              cs_CapturaTela:
+                                                begin
+                                                  //teste
+                                                  CapituraTela.SaveToFile(ExtractFileDir(Application.ExeName)+'/'+FormatDateTime('yyyymmddhhnnsszzz', Now)+'.bmp');
+                                                end;  
+                                            end;
+                                          end;
+                                      end;                                    
+
                                       DM.cds_acoesAgComp.Next;
-                                    end;
+                                    end;                                
                                 end;
                               DM.cds_acoesAgComp.Filtered:= False;
                             end;
