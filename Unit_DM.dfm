@@ -446,6 +446,9 @@ object DM: TDM
     object cds_acoesAgCompAAC_ARQ_Cod: TIntegerField
       FieldName = 'AAC_ARQ_Cod'
     end
+    object cds_acoesAgCompAAC_Tipo: TIntegerField
+      FieldName = 'AAC_Tipo'
+    end
   end
   object ds_acoesAgComp: TDataSource
     DataSet = cds_acoesAgComp

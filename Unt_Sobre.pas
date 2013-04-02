@@ -233,7 +233,18 @@ begin
                   with Add do
                     begin
                       if j = 0 then
-                        Caption:= UpperCase(Copy(LongDayNames[i + 1], 1, 1))
+                        begin
+                          Caption:= UpperCase(Copy(LongDayNames[i + 1], 1, 1));
+                          case i of
+                           0: Hint:= 'Domingo';
+                           1: Hint:= 'Segunda';
+                           2: Hint:= 'Terça';
+                           3: Hint:= 'Quarta';
+                           4: Hint:= 'Quinta';
+                           5: Hint:= 'Sexta';
+                           6: Hint:= 'Sabado';
+                          end;
+                        end
                       else
                         if (i = DayOfTheWeek(EncodeDateTime(AAno,
                                                              AMes,
@@ -271,7 +282,7 @@ begin
                           ImageIndex:= 0;
                           Hint:= 'Hoje';
                         end
-                      else if (Trim(Caption) = '1') then
+                      else if (Trim(Caption) = '1') and (DayOfTheMonth(now) = 1) then
                         begin
                           ImageIndex:= 0;
                           Hint:= 'Hoje';
@@ -281,7 +292,7 @@ begin
             end;
           if (j > 0) and AInicia then
             begin
-              ASemana.Caption:= IntToStr(k)+'a semana';
+              ASemana.Caption:= IntToStr(k)+'ª semana';
               Inc(k);
             end;
         end;

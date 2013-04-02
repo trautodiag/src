@@ -11,7 +11,7 @@ uses
   cxDropDownEdit, cxCalendar, cxCheckBox, Unt_Util, Unt_CadAnArquivo, DBClient,
   dxSkinOffice2007Blue, cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage,
   cxDBData, cxGridCustomTableView, cxGridTableView, cxGridDBTableView,
-  cxGridLevel, cxClasses, cxGridCustomView, cxGrid;
+  cxGridLevel, cxClasses, cxGridCustomView, cxGrid, Unt_FuncoesPredefinidas;
 
 type
   TF_CadAgendaCompromisso = class(TF_BaseCad)
@@ -29,7 +29,6 @@ type
     lbl_Obs: TLabel;
     dbm_AGC_Observacao: TcxDBMemo;
     act_VincularArq: TAction;
-    btn_VincularArq: TcxButton;
     pnl_ArquivosVinculados: TPanel;
     pnl_inserir: TPanel;
     act_ExcluirArquivo: TAction;
@@ -45,6 +44,11 @@ type
     ds_Arquivo: TDataSource;
     cds_Arquivo: TClientDataSet;
     cxDBCheckBox2: TcxDBCheckBox;
+    pm_acoes: TPopupMenu;
+    Novoarquivoeouaes1: TMenuItem;
+    act_FuncoesPre: TAction;
+    Funespredefinidas1: TMenuItem;
+    btn_abriVinculo: TcxButton;
     procedure FormShow(Sender: TObject);
     procedure act_SalvarExecute(Sender: TObject);
     procedure act_CancelarExecute(Sender: TObject);
@@ -56,6 +60,7 @@ type
       ARecord: TcxCustomGridRecord; var AText: string);
     procedure FormResize(Sender: TObject);
     procedure ds_ArqAcaoStateChange(Sender: TObject);
+    procedure act_FuncoesPreExecute(Sender: TObject);
   private
     { Private declarations }
     FSobre: Boolean;
@@ -100,6 +105,26 @@ begin
   cds_ArqAcao.Delete;
 end;
 
+procedure TF_CadAgendaCompromisso.act_FuncoesPreExecute(Sender: TObject);
+var
+  filtro: string;
+begin
+  inherited;
+  filtro:= cds_ArqAcao.Filter;
+  cds_ArqAcao.Filtered:= False;
+  cds_ArqAcao.Insert;
+  //cds_ArqAcao.FieldByName('AAC_Cod').AsInteger:= cds_ArqAcao.RecordCount; //Para nao erro
+  cds_ArqAcao.FieldByName('AAC_AGC_Cod').AsInteger:= StrToInt(dbedt_AGC_Cod.Text);
+  cds_ArqAcao.FieldByName('AAC_ARQ_Cod').AsInteger:= TF_FuncoesPredefinidas.Inicia;
+  cds_ArqAcao.FieldByName('AAC_Tipo').AsInteger:= cs_AAC_Tipo_FuncPre;
+  if cds_ArqAcao.FieldByName('AAC_ARQ_Cod').AsInteger = 0 then
+    cds_ArqAcao.Cancel
+  else
+    cds_ArqAcao.Post;
+  cds_ArqAcao.Filter:= filtro;
+  cds_ArqAcao.Filtered:= True;
+end;
+
 procedure TF_CadAgendaCompromisso.act_SalvarExecute(Sender: TObject);
 var
   OutHandleIni: THandle;
@@ -110,8 +135,8 @@ begin
       DM.cds_AgendaCompromissoAGC_Status.asBoolean:= False;
       DM.cds_AgendaCompromissoData.AsDateTime:= Now;
       DM.cds_AgendaCompromisso.Post;
-
-      if (not cds_ArqAcao.IsEmpty) or (cds_ArqAcao.ChangeCount > 0) then
+      //ver
+      if (cds_ArqAcao.RecordCount > 0) or (cds_ArqAcao.ChangeCount > 0) then
         begin
           cds_ArqAcao.First;
           while not cds_ArqAcao.Eof do
@@ -121,8 +146,17 @@ begin
                   DM.cds_acoesAgComp.Insert;
                   DM.cds_acoesAgComp.FieldByName('AAC_AGC_Cod').AsInteger:= cds_ArqAcao.FieldByName('AAC_AGC_Cod').AsInteger;
                   DM.cds_acoesAgComp.FieldByName('AAC_ARQ_Cod').AsInteger:= cds_ArqAcao.FieldByName('AAC_ARQ_Cod').AsInteger;
+                  DM.cds_acoesAgComp.FieldByName('AAC_Tipo').AsInteger:= cds_ArqAcao.FieldByName('AAC_Tipo').AsInteger;
                   DM.cds_acoesAgComp.Post;
-                end;
+                end
+              else if Not DM.cds_acoesAgComp.Locate('AAC_AGC_Cod;AAC_ARQ_Cod', VarArrayOf([cds_ArqAcao.FieldByName('AAC_AGC_Cod').AsInteger, cs_CapturaTela]), []) then
+               begin
+                  DM.cds_acoesAgComp.Insert;
+                  DM.cds_acoesAgComp.FieldByName('AAC_AGC_Cod').AsInteger:= cds_ArqAcao.FieldByName('AAC_AGC_Cod').AsInteger;
+                  DM.cds_acoesAgComp.FieldByName('AAC_ARQ_Cod').AsInteger:= cds_ArqAcao.FieldByName('AAC_ARQ_Cod').AsInteger;
+                  DM.cds_acoesAgComp.FieldByName('AAC_Tipo').AsInteger:= cds_ArqAcao.FieldByName('AAC_Tipo').AsInteger;
+                  DM.cds_acoesAgComp.Post;
+               end;     
               cds_ArqAcao.Next;
             end;
         end;
@@ -153,6 +187,7 @@ begin
             //cds_ArqAcao.FieldByName('AAC_Cod').AsInteger:= cds_ArqAcao.RecordCount; //Para nao erro
             cds_ArqAcao.FieldByName('AAC_AGC_Cod').AsInteger:= StrToInt(dbedt_AGC_Cod.Text);
             cds_ArqAcao.FieldByName('AAC_ARQ_Cod').AsInteger:= FieldByName('Codigo').AsInteger;
+            cds_ArqAcao.FieldByName('AAC_Tipo').AsInteger:= cs_AAC_Tipo_ExecArq;
             cds_ArqAcao.Post;
             cds_ArqAcao.Filter:= filtro;
             cds_ArqAcao.Filtered:= True;
@@ -196,7 +231,8 @@ begin
   if (AnStatus = dsInsert) and (not FSobre) then
     begin
       cbb_AGC_Data.Date:= Date;
-      DM.cds_AgendaCompromissoAGC_ArqExec.asBoolean:= False;
+      DM.cds_AgendaCompromissoAGC_ArqExec.asBoolean:= False;  
+      DM.cds_AgendaCompromissoAGC_Status.asBoolean:= False;
     end;
 
   cds_Arquivo.Data:= DM.cds_arquivo.Data;
@@ -275,7 +311,13 @@ begin
       cds_Arquivo.Filtered:= True;
       if not cds_Arquivo.IsEmpty then
         AText:= cds_Arquivo.FieldByName('ARQ_Nome').AsString
-      else
+      else if StrToInt(AText) = cs_CapturaTela then
+        begin
+          case StrToInt(AText) of
+            -1 : AText:= 'Captura de tela';
+          end;
+        end
+      else           
         AText:= 'Arquivo/Ação não identificado';
     end
   else

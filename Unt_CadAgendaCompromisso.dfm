@@ -64,25 +64,26 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
       inherited pnl_Base: TPanel
         Top = 453
         Width = 463
-        TabOrder = 7
+        TabOrder = 8
         ExplicitTop = 453
         ExplicitWidth = 463
         inherited btn_Salvar: TcxButton
           Left = 271
+          TabOrder = 1
           ExplicitLeft = 271
         end
         inherited btn_Cancelar: TcxButton
           Left = 368
+          TabOrder = 2
           ExplicitLeft = 368
         end
-        object btn_VincularArq: TcxButton
+        object btn_abriVinculo: TcxButton
           Left = 8
           Top = 5
-          Width = 161
+          Width = 121
           Height = 25
           Action = act_abriVinculo
-          Anchors = [akTop, akRight]
-          TabOrder = 2
+          TabOrder = 0
         end
       end
       object dbedt_AGC_Cod: TDBEdit
@@ -162,7 +163,7 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
         Height = 244
         Align = alBottom
         BevelOuter = bvNone
-        TabOrder = 8
+        TabOrder = 7
         Visible = False
         object pnl_inserir: TPanel
           Left = 0
@@ -178,14 +179,17 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
           object btn_novovinculo: TcxButton
             Left = 8
             Top = 5
-            Width = 149
+            Width = 158
             Height = 25
-            Action = act_VincularArq
             Anchors = [akTop, akRight]
+            Caption = 'Novo arquivo e/ou a'#231#245'es...'
             TabOrder = 0
+            OnClick = act_VincularArqExecute
+            DropDownMenu = pm_acoes
+            Kind = cxbkDropDownButton
           end
           object btn_ExcluirArqAcao: TcxButton
-            Left = 162
+            Left = 172
             Top = 5
             Width = 127
             Height = 25
@@ -194,7 +198,7 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
             TabOrder = 1
           end
           object cxDBCheckBox2: TcxDBCheckBox
-            Left = 303
+            Left = 305
             Top = 8
             Caption = 'Executar auto'
             DataBinding.DataField = 'AGC_ArqExec'
@@ -263,11 +267,10 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
     end
   end
   inherited act_cadastros: TActionList
-    Left = 72
-    Top = 152
+    Left = 64
+    Top = 344
     object act_VincularArq: TAction
-      Caption = 'Novo arquivo e/ou a'#231#245'es...'
-      Enabled = False
+      Caption = 'Vincular arquivo...'
       OnExecute = act_VincularArqExecute
     end
     object act_ExcluirArquivo: TAction
@@ -277,8 +280,12 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
     end
     object act_abriVinculo: TAction
       AutoCheck = True
-      Caption = 'Vincular arquivo/a'#231#227'o'
+      Caption = 'Vincular arquivo...'
       OnExecute = act_abriVinculoExecute
+    end
+    object act_FuncoesPre: TAction
+      Caption = 'Fun'#231#245'es pre-definidas...'
+      OnExecute = act_FuncoesPreExecute
     end
   end
   object cds_ArqAcao: TClientDataSet
@@ -303,5 +310,15 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
     Params = <>
     Left = 256
     Top = 272
+  end
+  object pm_acoes: TPopupMenu
+    Left = 160
+    Top = 160
+    object Novoarquivoeouaes1: TMenuItem
+      Action = act_VincularArq
+    end
+    object Funespredefinidas1: TMenuItem
+      Action = act_FuncoesPre
+    end
   end
 end
