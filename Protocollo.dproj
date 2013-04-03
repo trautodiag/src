@@ -105,5 +105,8 @@
       <Form>F_UpDown</Form>
     </DCCReference>
     <DCCReference Include="Unt_Util.pas" />
+    <DCCReference Include="Unt_VisualizadorImagem.pas">
+      <Form>F_VisualizadorImagem</Form>
+    </DCCReference>
   </ItemGroup>
 </Project>

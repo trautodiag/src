@@ -21,7 +21,7 @@ uses
   dxSkinSevenClassic, dxSkinSharp, dxSkinSharpPlus, dxSkinSilver,
   dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008, dxSkinTheAsphaltWorld,
   dxSkinsDefaultPainters, dxSkinValentine, dxSkinVS2010, dxSkinWhiteprint,
-  dxSkinXmas2008Blue;
+  dxSkinXmas2008Blue, Unt_VisualizadorImagem;
 
 type
   TF_CadAnArquivo = class(TF_BaseAnCad)
@@ -202,12 +202,16 @@ end;
 procedure TF_CadAnArquivo.act_ExecutarSelecaoArquivoExecute(Sender: TObject);
 var
   book: string;
+  Imagens: TClientDataSet;
 begin
   inherited;
   if ValidaSelecao(cds_arquivo.data, cds_arquivo.FieldByName('ARQ_Sel')) then
     begin
       if MessageDlg('Deseja executar os arquivos selecionados ?', mtWarning, mbYesNo, 0) = mrYes then
         begin
+          Imagens:= TClientDataSet.Create(Self);
+          Imagens.FieldDefs.Add('Imagem', ftGraphic);
+          Imagens.CreateDataSet;
           book:= cds_arquivo.Bookmark;
           cds_arquivo.DisableControls;
           try
@@ -216,15 +220,25 @@ begin
               begin
                 if cds_arquivo.FieldByName('ARQ_Sel').AsBoolean then
                   begin
-                    ExecFileArq(cds_arquivo.FieldByName('ARQ_Path').AsString, Self.Handle);
+                    if ExtractFileExt(cds_arquivo.FieldByName('ARQ_Path').AsString) = '.'+cs_SCREEN then
+                      begin
+                        Imagens.Insert;
+                        TGraphicField(Imagens.FieldByName('Imagem')).LoadFromFile(cds_arquivo.FieldByName('ARQ_Path').AsString);
+                        Imagens.Post;
+                      end
+                    else
+                      ExecFileArq(cds_arquivo.FieldByName('ARQ_Path').AsString, Self.Handle);
                     cds_arquivo.Next;
                   end
                 else
                   cds_arquivo.Next;
               end;
+            if Imagens.RecordCount > 0 then
+              TF_VisualizadorImagem.Inicia(Imagens.Data);
           finally
             cds_arquivo.Bookmark:= book;
             cds_arquivo.EnableControls;
+            Imagens.Free;
           end;
         end;
     end

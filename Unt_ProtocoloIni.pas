@@ -314,16 +314,17 @@ begin
     begin
       dataAux:= TClientDataSet.Create(Self);
       dataAux.Data:= DM.cds_arquivo.Data;
-      with TJPEGImage.Create do
+      with TBitmap.Create do
         begin
           try
+            AStream.Position:= 0;
             LoadFromStream(AStream);
-            SaveToFile(dirBase+'\'+Trim(UpperCase(AExtens))+'\'+ANomeArquivo+AExtens);
+            SaveToFile(dirBase+'\'+Trim(UpperCase(AExtens))+'\'+ANomeArquivo+'.'+AExtens);
           finally
             Free;
           end;
         end;
-      if FileExists(dirBase+'\'+Trim(UpperCase(AExtens))+'\'+ANomeArquivo+AExtens) then
+      if FileExists(dirBase+'\'+Trim(UpperCase(AExtens))+'\'+ANomeArquivo+'.'+AExtens) then
         begin
           DM.cds_arquivo.Insert;
           DM.cds_arquivo.FieldByName('ARQ_PST_Cod').AsInteger:= DM.cds_pasta.FieldByName('PST_Cod').AsInteger;
@@ -344,7 +345,7 @@ var
   voz : OleVariant;
   ClientAux, ClientAux2: TClientDataSet;
   Stream: TMemoryStream;
-  jpeg: TJPEGImage;
+  jpeg: TBitmap;
 begin
   inherited;
   tm_Compromissos.Enabled:= (not cds_Compromissos.IsEmpty);
@@ -422,7 +423,7 @@ begin
                                                     jpeg:= CapituraTela;
                                                     jpeg.SaveToStream(Stream);
                                                     try
-                                                      SetRegistroArquivo(Stream, 'SCREEN', 'USUARIOTESTE');
+                                                      SetRegistroArquivo(Stream, cs_SCREEN, 'USUARIOTESTE');
                                                     finally
                                                       jpeg.Free;
                                                     end;
