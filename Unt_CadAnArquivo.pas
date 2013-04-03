@@ -247,22 +247,6 @@ begin
 end;
 
 procedure TF_CadAnArquivo.act_UploadArquivosExecute(Sender: TObject);
-  procedure CopyFile(FromFileName, ToFileName: string);
-  var
-    shellinfo: TSHFileOpStructA;
-    Files:String;
-  begin
-    Files:=FromFileName+#0+#0;
-    with shellinfo do
-    begin
-      Wnd:=Self.handle;
-      wFunc:=FO_COPY;
-      pFrom:=PChar(Files);
-      pTo:=PChar(ToFileName);
-      fFlags:=FOF_NOCONFIRMATION or FOF_SILENT;
-    end;
-    SHFileOperation(shellinfo);
-  end;
 var
   dirBase, dirArq, copya: string;
   dataAux: TClientDataSet;
@@ -299,7 +283,7 @@ begin
               dataAux:= TClientDataSet.Create(Self);
               dataAux.Data:= DM.cds_arquivo.Data;
               copya:= dirBase+'\'+Trim(UpperCase(copy(ExtractFileExt(dlgOpen_Upload.FileName), 2, length(dlgOpen_Upload.FileName) - 1)));
-              CopyFile(PAnsiChar(dlgOpen_Upload.FileName), PAnsiChar(copya));
+              CopyFile(PAnsiChar(dlgOpen_Upload.FileName), PAnsiChar(copya), Self.Handle);
               if FileExists(dirBase+'\'+Trim(UpperCase(copy(ExtractFileExt(dlgOpen_Upload.FileName), 2, length(dlgOpen_Upload.FileName) - 1)))+'\'+ExtractFileName(dlgOpen_Upload.FileName)) then
                 begin
                   DM.cds_arquivo.Insert;
