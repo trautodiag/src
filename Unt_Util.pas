@@ -29,6 +29,9 @@ const
 
   cs_CapturaTela = -1;
 
+  //Extenções
+  cs_SCREEN = 'SCREEN';
+
   //cs_FuncoesPre = [cs_CapturaTela];
 
 function NovoGuid: string;
@@ -42,7 +45,7 @@ procedure ExecFileArq(F: String; AHandle: THandle);
 procedure CopyFile(FromFileName, ToFileName: string; AHandle: THandle);
 
 //Funções do sistema
-function CapituraTela: TJPEGImage;
+function CapituraTela: TBitmap;
 
 implementation
 
@@ -63,31 +66,23 @@ begin
   SHFileOperation(shellinfo);
 end;
 
-function CapituraTela: TJPEGImage;
+function CapituraTela: TBitmap;
 var
   dc: HDC;
   cv: TCanvas;
-  btm: TBitmap;
 begin
-  btm:= TBitmap.Create;
-  try
-    btm.Width:= Screen.Width;
-    btm.Height:= Screen.Height;
+    Result:= TBitmap.Create;
+    Result.Width:= Screen.Width;
+    Result.Height:= Screen.Height;
     dc:= GetDC(0);
     cv:= TCanvas.Create;
     try
       cv.Handle:= dc;
-      btm.Canvas.CopyRect(Rect(0, 0, Screen.Width, Screen.Height), cv, Rect(0, 0, Screen.Width, Screen.Height));
+      Result.Canvas.CopyRect(Rect(0, 0, Screen.Width, Screen.Height), cv, Rect(0, 0, Screen.Width, Screen.Height));
     finally
       cv.Free;
     end;
     ReleaseDC(0, dc);
-    Result:= TJPEGImage.Create;
-    Result.Assign(btm);
-  finally
-    btm.Free;
-  end;
-  Result.CompressionQuality:= 90;
 end;
 
 procedure ExecFileArq(F: String; AHandle: THandle);
