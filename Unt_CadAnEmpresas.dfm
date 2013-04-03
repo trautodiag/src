@@ -6,7 +6,6 @@ inherited F_CadAnEmpresas: TF_CadAnEmpresas
     inherited ts_base: TcxTabSheet
       inherited pnl_grid: TPanel
         inherited grid_base: TcxGrid
-          ExplicitLeft = 0
           inherited vwl_base: TcxGridDBTableView
             object vwl_baseColumn1: TcxGridDBColumn
               Caption = 'C'#243'digo'
@@ -36,7 +35,7 @@ inherited F_CadAnEmpresas: TF_CadAnEmpresas
   end
   inherited il_base: TImageList
     Bitmap = {
-      494C010104001800600080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010104001800640080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000000200000001000001002000000000000000
       0800000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -16938,5 +16937,8 @@ inherited F_CadAnEmpresas: TF_CadAnEmpresas
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000
       000000000000}
+  end
+  inherited stylo_base: TcxStyleRepository
+    PixelsPerInch = 96
   end
 end

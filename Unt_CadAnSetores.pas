@@ -8,9 +8,10 @@ uses
   cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters, Menus,
   cxContainer, cxEdit, ImgList, ActnList, cxScrollBox, StdCtrls, cxTextEdit,
   cxGroupBox, cxRadioGroup, cxButtons, ExtCtrls, cxPC, Unt_CadSetores, Unit_DM, Unt_Util,
-  Unt_ImagePanel, cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage, DB,
+   cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage, DB,
   cxDBData, cxLocalization, cxGridLevel, cxClasses, cxGridCustomView,
-  cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid, DBClient;
+  cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid, DBClient,
+  dxSkinOffice2007Blue;
 
 type
   TF_CadAnSetores = class(TF_BaseAnCad)

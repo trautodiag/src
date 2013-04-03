@@ -6,11 +6,8 @@ inherited F_CadAnDocumentos: TF_CadAnDocumentos
     inherited ts_base: TcxTabSheet
       inherited pnl_grid: TPanel
         inherited grid_base: TcxGrid
-          ExplicitLeft = 0
-          ExplicitTop = 0
           inherited vwl_base: TcxGridDBTableView
             Navigator.Visible = False
-            OptionsView.GroupByBox = True
             object vwl_baseColumn1: TcxGridDBColumn
               Caption = 'C'#243'digo'
               DataBinding.FieldName = 'DOC_Cod'
@@ -39,7 +36,7 @@ inherited F_CadAnDocumentos: TF_CadAnDocumentos
   end
   inherited il_base: TImageList
     Bitmap = {
-      494C010101000800500080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010101000800540080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000000200008000000001002000000000000000
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -8493,5 +8490,8 @@ inherited F_CadAnDocumentos: TF_CadAnDocumentos
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000}
+  end
+  inherited stylo_base: TcxStyleRepository
+    PixelsPerInch = 96
   end
 end

@@ -22,7 +22,7 @@ uses
   Unit_DM, Mask, DBCtrls, DB, DBClient, Unt_CadAnClientes, Unt_CadAnArquivo,
   cxProgressBar, cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage,
   cxDBData, cxGridLevel, cxGridCustomTableView, cxGridTableView,
-  cxGridDBTableView, cxClasses, cxGridCustomView, cxGrid, cxGridStrs;
+  cxGridDBTableView, cxClasses, cxGridCustomView, cxGrid, cxGridStrs, Unt_CadAgendaCompromisso;
 
 type
   TTipoImagem = (img_JPG, img_BMP, img_GIF, img_PNG, img_WMF, img_EMF, img_ICO, img_DES);
@@ -77,6 +77,14 @@ type
     vwl_baseColumn3: TcxGridDBColumn;
     vwl_baseColumn4: TcxGridDBColumn;
     tbl_base: TcxGridLevel;
+    vwl_baseColumn5: TcxGridDBColumn;
+    tbl_associacao: TcxGridLevel;
+    vwl_associacao: TcxGridDBTableView;
+    vwl_associacaoColumn1: TcxGridDBColumn;
+    cds_associacao: TClientDataSet;
+    ds_associacao: TDataSource;
+    cds_Arquivo: TClientDataSet;
+    ds_Arquivo: TDataSource;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -93,12 +101,21 @@ type
     procedure ts_CaixaClienteShow(Sender: TObject);
     procedure pnl_CaixaClienteDblClick(Sender: TObject);
     procedure tab_compromissosDiaShow(Sender: TObject);
+    procedure vwl_baseCustomDrawCell(Sender: TcxCustomGridTableView;
+      ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
+      var ADone: Boolean);
+    procedure act_NovoCompromissoExecute(Sender: TObject);
+    procedure act_ExcluirCompromissoExecute(Sender: TObject);
+    procedure vwl_associacaoColumn1GetDisplayText(
+      Sender: TcxCustomGridTableItem; ARecord: TcxCustomGridRecord;
+      var AText: string);
   private
     FAltura: Integer;
     FHotDia: Integer;
     originalPanelWindowProc : TWndMethod;
     FHotData: TDate;
     { Private declarations }
+    procedure AtualizaResgistros(var Msg: TMessage); message WM_SALVO;
     function GetTipoDaImagem(p_Stream: TMemoryStream):TTipoImagem;
     procedure Esconde(var Msg: TMessage); message WM_UP;
     procedure Mostra(var Msg: TMessage); message WM_NOTUP;
@@ -216,7 +233,18 @@ begin
                   with Add do
                     begin
                       if j = 0 then
-                        Caption:= UpperCase(Copy(LongDayNames[i + 1], 1, 1))
+                        begin
+                          Caption:= UpperCase(Copy(LongDayNames[i + 1], 1, 1));
+                          case i of
+                           0: Hint:= 'Domingo';
+                           1: Hint:= 'Segunda';
+                           2: Hint:= 'Terça';
+                           3: Hint:= 'Quarta';
+                           4: Hint:= 'Quinta';
+                           5: Hint:= 'Sexta';
+                           6: Hint:= 'Sabado';
+                          end;
+                        end
                       else
                         if (i = DayOfTheWeek(EncodeDateTime(AAno,
                                                              AMes,
@@ -249,17 +277,22 @@ begin
                                 Caption:= IntToStr(ADias);
                               end;
                           end;
-                      if (DayOfTheMonth(now) = ADias) then
+                      if (DayOfTheMonth(now) = ADias) and (DayOfTheMonth(now) <> 1) then
                         begin
                           ImageIndex:= 0;
                           Hint:= 'Hoje';
-                        end;
+                        end
+                      else if (Trim(Caption) = '1') and (DayOfTheMonth(now) = 1) then
+                        begin
+                          ImageIndex:= 0;
+                          Hint:= 'Hoje';
+                        end
                     end;
                 end;
             end;
           if (j > 0) and AInicia then
             begin
-              ASemana.Caption:= IntToStr(k)+'a semana';
+              ASemana.Caption:= IntToStr(k)+'ª semana';
               Inc(k);
             end;
         end;
@@ -485,10 +518,36 @@ begin
     act_ExibirCompromissosExecute(Self);
 end;
 
+procedure TF_Sobre.act_ExcluirCompromissoExecute(Sender: TObject);
+begin
+  if MessageDlg('Deseja excluir todos os compromisso do dia?', mtInformation, mbYesNo, 0) = mrYes then
+    begin
+      DM.cds_AgendaCompromisso.Filtered:= False;
+      DM.cds_AgendaCompromisso.Filter:= 'AGC_Data = '+FormatDateTime('yyyy-mm-dd',HotData);
+      DM.cds_AgendaCompromisso.Filtered:= True;
+      if not DM.cds_AgendaCompromisso.IsEmpty then
+        begin
+          while DM.cds_AgendaCompromisso.RecordCount > 0 do
+            begin
+              DM.cds_AgendaCompromisso.Delete;
+            end;
+        end;
+      DM.cds_AgendaCompromisso.Filtered:= False;
+    end;
+end;
+
 procedure TF_Sobre.act_ExibirCompromissosExecute(Sender: TObject);
 begin
   pnl_topcompromissos.Caption:= 'Compromossos do dia '+ IntToStr(HotDia)+ ' de '+ cbbimg_mes.EditText +' de '+ cbb_ano.Text;
   tab_compromissosDia.Show;
+end;
+
+procedure TF_Sobre.act_NovoCompromissoExecute(Sender: TObject);
+begin
+  if HotData >= Date  then
+    TF_CadAgendaCompromisso.IniciaCad(Self.Handle, True, HotData)
+  else
+    MessageDlg('Não é possivél inserir um compromisso por essa funcionalidade com data inferior a data atual.', mtInformation, [mbOK], 0)
 end;
 
 procedure TF_Sobre.AHotButton(Sender: TObject; const Button: TButtonItem);
@@ -497,6 +556,7 @@ begin
     begin
       HotDia:= StrToIntDef(Button.Caption, 0);
       act_ExibirCompromissos.Enabled:= HotDia <> 0;
+      act_NovoCompromisso.Enabled:= HotDia <> 0;
       if HotDia <> 0 then       
         HotData:= EncodeDate(StrToInt(cbb_ano.Text), Integer(cbbimg_mes.EditValue), HotDia);
     end;
@@ -511,6 +571,18 @@ procedure TF_Sobre.AMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
   Self.AlphaBlendValue:= 255;
+end;
+
+procedure TF_Sobre.AtualizaResgistros(var Msg: TMessage);
+begin
+  cds_dados.Data:= DM.cds_AgendaCompromisso.Data;
+  cds_dados.Filtered:= False;
+  cds_dados.Filter:= 'AGC_Data = '+FormatDateTime('yyyy-mm-dd',HotData);
+  cds_dados.Filtered:= True;
+
+  cds_associacao.Data:= DM.cds_acoesAgComp.Data;
+  cds_associacao.IndexFieldNames:= 'AAC_AGC_Cod';
+  cds_Arquivo.Data:= DM.cds_arquivo.Data;
 end;
 
 procedure TF_Sobre.btn_OKClick(Sender: TObject);
@@ -580,12 +652,59 @@ begin
   cds_dados.Filtered:= False;
   cds_dados.Filter:= 'AGC_Data = '+FormatDateTime('yyyy-mm-dd',HotData);
   cds_dados.Filtered:= True;
+
+  cds_associacao.Data:= DM.cds_acoesAgComp.Data;
+  cds_associacao.IndexFieldNames:= 'AAC_AGC_Cod';
+  cds_Arquivo.Data:= DM.cds_arquivo.Data;
 end;
 
 procedure TF_Sobre.ts_CaixaClienteShow(Sender: TObject);
 begin
   dbedt_PRO_CLI_Cod.SetFocus;
   il_status.GetIcon(2, img_status.Picture.Icon);
+end;
+
+procedure TF_Sobre.vwl_associacaoColumn1GetDisplayText(
+  Sender: TcxCustomGridTableItem; ARecord: TcxCustomGridRecord;
+  var AText: string);
+begin
+  if trim(AText) <> '' then
+    begin
+      cds_Arquivo.Filtered:= False;
+      cds_Arquivo.Filter:= 'ARQ_Cod =' +AText;
+      cds_Arquivo.Filtered:= True;
+      if not cds_Arquivo.IsEmpty then
+        AText:= cds_Arquivo.FieldByName('ARQ_Nome').AsString
+      else if StrToInt(AText) = cs_CapturaTela then
+        begin
+          case StrToInt(AText) of
+            -1 : AText:= 'Captura de tela';
+          end;
+        end
+      else           
+        AText:= 'Arquivo/Ação não identificado';
+    end
+  else
+    AText:= 'Arquivo/Ação não identificado';
+end;
+
+procedure TF_Sobre.vwl_baseCustomDrawCell(Sender: TcxCustomGridTableView;
+  ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
+  var ADone: Boolean);
+begin
+  if AViewInfo.GridRecord.Values[vwl_baseColumn5.Index] = True then
+    ACanvas.Font.Color:= clGreen
+  else if (not (AViewInfo.GridRecord.Values[vwl_baseColumn5.Index] = True)) and
+    (EncodeDateTime(YearOf(AViewInfo.GridRecord.Values[vwl_baseColumn2.Index]),
+                    MonthOf(AViewInfo.GridRecord.Values[vwl_baseColumn2.Index]),
+                    DayOf(AViewInfo.GridRecord.Values[vwl_baseColumn2.Index]),
+                    AViewInfo.GridRecord.Values[vwl_baseColumn3.Index],
+                    AViewInfo.GridRecord.Values[vwl_baseColumn4.Index],
+                    0,
+                    0) < Now) then
+    ACanvas.Font.Color:= clRed
+  else
+    ACanvas.Font.Color:= clBlack;
 end;
 
 end.

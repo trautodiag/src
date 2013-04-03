@@ -1,18 +1,23 @@
 inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
   Caption = 'Cadastro de compromissos'
-  ClientHeight = 240
+  ClientHeight = 488
   ClientWidth = 465
+  OnResize = FormResize
   OnShow = FormShow
   ExplicitWidth = 471
-  ExplicitHeight = 272
+  ExplicitHeight = 516
   PixelsPerInch = 96
   TextHeight = 13
   inherited pgctrl_base: TcxPageControl
     Width = 465
-    Height = 240
-    ClientRectBottom = 239
+    Height = 488
+    ExplicitWidth = 465
+    ExplicitHeight = 488
+    ClientRectBottom = 487
     ClientRectRight = 464
     inherited ts_base: TcxTabSheet
+      ExplicitWidth = 463
+      ExplicitHeight = 486
       object lbl_cod: TLabel [0]
         Left = 8
         Top = 7
@@ -57,14 +62,28 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
         Caption = 'Observa'#231#227'o'
       end
       inherited pnl_Base: TPanel
-        Top = 205
+        Top = 453
         Width = 463
-        TabOrder = 7
+        TabOrder = 8
+        ExplicitTop = 453
+        ExplicitWidth = 463
         inherited btn_Salvar: TcxButton
           Left = 271
+          TabOrder = 1
+          ExplicitLeft = 271
         end
         inherited btn_Cancelar: TcxButton
           Left = 368
+          TabOrder = 2
+          ExplicitLeft = 368
+        end
+        object btn_abriVinculo: TcxButton
+          Left = 8
+          Top = 5
+          Width = 121
+          Height = 25
+          Action = act_abriVinculo
+          TabOrder = 0
         end
       end
       object dbedt_AGC_Cod: TDBEdit
@@ -137,10 +156,169 @@ inherited F_CadAgendaCompromisso: TF_CadAgendaCompromisso
         Height = 89
         Width = 449
       end
+      object pnl_ArquivosVinculados: TPanel
+        Left = 0
+        Top = 209
+        Width = 463
+        Height = 244
+        Align = alBottom
+        BevelOuter = bvNone
+        TabOrder = 7
+        Visible = False
+        object pnl_inserir: TPanel
+          Left = 0
+          Top = 0
+          Width = 463
+          Height = 35
+          Align = alTop
+          BevelOuter = bvNone
+          TabOrder = 0
+          DesignSize = (
+            463
+            35)
+          object btn_novovinculo: TcxButton
+            Left = 8
+            Top = 5
+            Width = 158
+            Height = 25
+            Anchors = [akTop, akRight]
+            Caption = 'Novo arquivo e/ou a'#231#245'es...'
+            TabOrder = 0
+            OnClick = act_VincularArqExecute
+            DropDownMenu = pm_acoes
+            Kind = cxbkDropDownButton
+          end
+          object btn_ExcluirArqAcao: TcxButton
+            Left = 172
+            Top = 5
+            Width = 127
+            Height = 25
+            Action = act_ExcluirArquivo
+            Anchors = [akTop, akRight]
+            TabOrder = 1
+          end
+          object cxDBCheckBox2: TcxDBCheckBox
+            Left = 305
+            Top = 8
+            Caption = 'Executar auto'
+            DataBinding.DataField = 'AGC_ArqExec'
+            DataBinding.DataSource = DM.ds_AgendaCompromisso
+            TabOrder = 2
+            Transparent = True
+            Width = 98
+          end
+        end
+        object grid_base: TcxGrid
+          Left = 0
+          Top = 35
+          Width = 463
+          Height = 209
+          Align = alClient
+          TabOrder = 1
+          LookAndFeel.SkinName = 'Office2010Blue'
+          object vwl_base: TcxGridDBTableView
+            Navigator.Buttons.CustomButtons = <>
+            Navigator.Buttons.First.Visible = False
+            Navigator.Buttons.PriorPage.Visible = False
+            Navigator.Buttons.Prior.Visible = False
+            Navigator.Buttons.Next.Visible = False
+            Navigator.Buttons.NextPage.Visible = False
+            Navigator.Buttons.Last.Visible = False
+            Navigator.Buttons.Insert.Visible = False
+            Navigator.Buttons.Append.Enabled = False
+            Navigator.Buttons.Append.Visible = True
+            Navigator.Buttons.Delete.Visible = False
+            Navigator.Buttons.Edit.Visible = False
+            Navigator.Buttons.Post.Visible = False
+            Navigator.Buttons.Cancel.Visible = False
+            Navigator.Buttons.Refresh.Visible = False
+            Navigator.Buttons.SaveBookmark.Visible = False
+            Navigator.Buttons.GotoBookmark.Visible = False
+            Navigator.Buttons.Filter.Visible = False
+            Navigator.InfoPanel.DisplayMask = '[RecordIndex] de [RecordCount]'
+            Navigator.Visible = True
+            DataController.DataSource = ds_ArqAcao
+            DataController.Summary.DefaultGroupSummaryItems = <>
+            DataController.Summary.FooterSummaryItems = <>
+            DataController.Summary.SummaryGroups = <>
+            FilterRow.InfoText = 'Click para definir o filtro'
+            OptionsBehavior.CellHints = True
+            OptionsData.CancelOnExit = False
+            OptionsData.Deleting = False
+            OptionsData.DeletingConfirmation = False
+            OptionsData.Editing = False
+            OptionsData.Inserting = False
+            OptionsView.NoDataToDisplayInfoText = 'N'#227'o h'#225' registros'
+            OptionsView.ColumnAutoWidth = True
+            OptionsView.GroupByBox = False
+            object vwl_baseColumn1: TcxGridDBColumn
+              Caption = 'Arquivo/A'#231#227'o'
+              DataBinding.FieldName = 'AAC_ARQ_Cod'
+              PropertiesClassName = 'TcxTextEditProperties'
+              Properties.Alignment.Horz = taLeftJustify
+              OnGetDisplayText = vwl_baseColumn1GetDisplayText
+            end
+          end
+          object tbl_base: TcxGridLevel
+            GridView = vwl_base
+          end
+        end
+      end
     end
   end
   inherited act_cadastros: TActionList
-    Left = 72
-    Top = 152
+    Left = 64
+    Top = 344
+    object act_VincularArq: TAction
+      Caption = 'Vincular arquivo...'
+      OnExecute = act_VincularArqExecute
+    end
+    object act_ExcluirArquivo: TAction
+      Caption = 'Excluir a'#231#227'o/arquivo'
+      Enabled = False
+      OnExecute = act_ExcluirArquivoExecute
+    end
+    object act_abriVinculo: TAction
+      AutoCheck = True
+      Caption = 'Vincular arquivo...'
+      OnExecute = act_abriVinculoExecute
+    end
+    object act_FuncoesPre: TAction
+      Caption = 'Fun'#231#245'es pre-definidas...'
+      OnExecute = act_FuncoesPreExecute
+    end
+  end
+  object cds_ArqAcao: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 120
+    Top = 312
+  end
+  object ds_ArqAcao: TDataSource
+    DataSet = cds_ArqAcao
+    OnStateChange = ds_ArqAcaoStateChange
+    Left = 192
+    Top = 312
+  end
+  object ds_Arquivo: TDataSource
+    DataSet = cds_Arquivo
+    Left = 312
+    Top = 272
+  end
+  object cds_Arquivo: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 256
+    Top = 272
+  end
+  object pm_acoes: TPopupMenu
+    Left = 160
+    Top = 160
+    object Novoarquivoeouaes1: TMenuItem
+      Action = act_VincularArq
+    end
+    object Funespredefinidas1: TMenuItem
+      Action = act_FuncoesPre
+    end
   end
 end

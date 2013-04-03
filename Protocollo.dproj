@@ -92,6 +92,9 @@
     <DCCReference Include="Unt_CadUsuarios.pas">
       <Form>F_CadUsuarios</Form>
     </DCCReference>
+    <DCCReference Include="Unt_FuncoesPredefinidas.pas">
+      <Form>F_FuncoesPredefinidas</Form>
+    </DCCReference>
     <DCCReference Include="Unt_ProtocoloIni.pas">
       <Form>F_ProtocoloIni</Form>
     </DCCReference>
@@ -102,5 +105,8 @@
       <Form>F_UpDown</Form>
     </DCCReference>
     <DCCReference Include="Unt_Util.pas" />
+    <DCCReference Include="Unt_VisualizadorImagem.pas">
+      <Form>F_VisualizadorImagem</Form>
+    </DCCReference>
   </ItemGroup>
 </Project>

@@ -5,13 +5,13 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Unt_BaseAnCad, ActnList, ComCtrls, StdCtrls, Buttons, ExtCtrls, Unt_Util,
-  Unit_DM, ImgList, Unt_ImagePanel, Unt_CadDocumentos, dxSkinsCore,
+  Unit_DM, ImgList, Unt_CadDocumentos, dxSkinsCore,
   dxSkinOffice2010Blue, dxSkinscxPCPainter, cxGraphics, cxControls,
   cxLookAndFeels, cxLookAndFeelPainters, Menus, cxContainer, cxEdit, cxTextEdit,
   cxGroupBox, cxRadioGroup, cxButtons, cxPC, cxScrollBox, cxStyles,
   cxCustomData, cxFilter, cxData, cxDataStorage, DB, cxDBData, cxLocalization,
   cxGridLevel, cxClasses, cxGridCustomView, cxGridCustomTableView,
-  cxGridTableView, cxGridDBTableView, cxGrid, DBClient;
+  cxGridTableView, cxGridDBTableView, cxGrid, DBClient, dxSkinOffice2007Blue;
 
 type
   TF_CadAnDocumentos = class(TF_BaseAnCad)

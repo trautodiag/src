@@ -102,6 +102,14 @@ type
     cds_AgendaCompromissoData: TDateTimeField;
     cds_AgendaCompromissoAGC_Hora: TIntegerField;
     cds_AgendaCompromissoAGC_Minuto: TIntegerField;
+    cds_AgendaCompromissoAGC_Alerta: TBooleanField;
+    cds_acoesAgComp: TClientDataSet;
+    ds_acoesAgComp: TDataSource;
+    cds_acoesAgCompAAC_Cod: TAutoIncField;
+    cds_acoesAgCompAAC_AGC_Cod: TIntegerField;
+    cds_acoesAgCompAAC_ARQ_Cod: TIntegerField;
+    cds_AgendaCompromissoAGC_ArqExec: TBooleanField;
+    cds_acoesAgCompAAC_Tipo: TIntegerField;
     procedure DataModuleCreate(Sender: TObject);
     procedure cds_documentosNewRecord(DataSet: TDataSet);
     procedure cds_documentosAfterDelete(DataSet: TDataSet);
@@ -145,6 +153,10 @@ type
     procedure cds_AgendaCompromissoAfterCancel(DataSet: TDataSet);
     procedure cds_AgendaCompromissoAfterDelete(DataSet: TDataSet);
     procedure cds_AgendaCompromissoNewRecord(DataSet: TDataSet);
+    procedure cds_acoesAgCompBeforeInsert(DataSet: TDataSet);
+    procedure cds_acoesAgCompAfterCancel(DataSet: TDataSet);
+    procedure cds_acoesAgCompAfterDelete(DataSet: TDataSet);
+    procedure cds_acoesAgCompNewRecord(DataSet: TDataSet);
   private
     { Private declarations }
     IDDocumento: Integer;
@@ -157,6 +169,7 @@ type
     IDPasta: Integer;
     IDArquivo: Integer;
     IDAgendaCompromisso: Integer;
+    IDAcoesAgComp: Integer;
     procedure CreateClientDataSet;
     procedure SalvaTabelas;
     procedure CarregaTabelas;
@@ -191,6 +204,32 @@ begin
     on e: Exception do
       MessageDlg(e.Message, mtError, [mbOK], 0);
   end;
+end;
+
+procedure TDM.cds_acoesAgCompAfterCancel(DataSet: TDataSet);
+begin
+  Dec(IDAcoesAgComp);
+end;
+
+procedure TDM.cds_acoesAgCompAfterDelete(DataSet: TDataSet);
+begin
+  Dec(IDAcoesAgComp);
+end;
+
+procedure TDM.cds_acoesAgCompBeforeInsert(DataSet: TDataSet);
+begin
+  cds_acoesAgComp.IndexFieldNames:= 'AAC_Cod';
+  if cds_acoesAgComp.RecordCount > 0 then
+    begin
+      cds_acoesAgComp.Last;
+      IDAcoesAgComp:= cds_acoesAgCompAAC_Cod.AsInteger;
+    end;
+end;
+
+procedure TDM.cds_acoesAgCompNewRecord(DataSet: TDataSet);
+begin
+  inc(IDAcoesAgComp);
+  cds_acoesAgCompAAC_Cod.AsInteger:= IDAcoesAgComp;
 end;
 
 procedure TDM.cds_AgendaCompromissoAfterCancel(DataSet: TDataSet);
@@ -477,6 +516,7 @@ begin
   IDPasta:= 0;
   IDArquivo:= 0;
   IDAgendaCompromisso:= 0;
+  IDAcoesAgComp:= 0;
 
   cds_documentos.IndexFieldNames:= 'DOC_Cod';
   if cds_documentos.RecordCount > 0 then
@@ -546,6 +586,13 @@ begin
     begin
       cds_AgendaCompromisso.Last;
       IDAgendaCompromisso:= cds_AgendaCompromissoAGC_Cod.AsInteger;
+    end;
+
+  cds_acoesAgComp.IndexFieldNames:= 'AAC_Cod';
+  if cds_acoesAgComp.RecordCount > 0 then
+    begin
+      cds_acoesAgComp.Last;
+      IDAcoesAgComp:= cds_acoesAgCompAAC_Cod.AsInteger;
     end;
 end;
 

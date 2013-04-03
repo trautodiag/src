@@ -37,6 +37,10 @@ object F_Sobre: TF_Sobre
     object ts_sobre: TcxTabSheet
       Caption = 'ts_sobre'
       ImageIndex = 0
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object pnl_sobre: TPanel
         Left = 0
         Top = 0
@@ -246,6 +250,10 @@ object F_Sobre: TF_Sobre
     object tab_Calendario: TcxTabSheet
       Caption = 'tab_Calendario'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object pnl_top: TPanel
         Left = 0
         Top = 0
@@ -387,7 +395,6 @@ object F_Sobre: TF_Sobre
         TabOrder = 0
         OnMouseLeave = pnl_bseMouseLeave
         OnMouseMove = cbbimg_mesMouseMove
-        ExplicitTop = -2
         object pnl_topcompromissos: TPanel
           Left = 0
           Top = 0
@@ -404,7 +411,6 @@ object F_Sobre: TF_Sobre
           TabOrder = 0
           OnMouseLeave = pnl_bseMouseLeave
           OnMouseMove = cbbimg_mesMouseMove
-          ExplicitTop = -6
         end
         object pnl_grid: TPanel
           Left = 0
@@ -414,8 +420,6 @@ object F_Sobre: TF_Sobre
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
-          ExplicitTop = 0
-          ExplicitHeight = 368
           object grid_base: TcxGrid
             Left = 0
             Top = 0
@@ -446,7 +450,9 @@ object F_Sobre: TF_Sobre
               Navigator.Buttons.Filter.Visible = False
               Navigator.InfoPanel.DisplayMask = '[RecordIndex] de [RecordCount]'
               Navigator.Visible = True
+              OnCustomDrawCell = vwl_baseCustomDrawCell
               DataController.DataSource = ds_dados
+              DataController.KeyFieldNames = 'AGC_Cod'
               DataController.Summary.DefaultGroupSummaryItems = <>
               DataController.Summary.FooterSummaryItems = <>
               DataController.Summary.SummaryGroups = <>
@@ -459,6 +465,7 @@ object F_Sobre: TF_Sobre
               OptionsData.Inserting = False
               OptionsView.NoDataToDisplayInfoText = 'N'#227'o h'#225' registros'
               OptionsView.ColumnAutoWidth = True
+              OptionsView.ExpandButtonsForEmptyDetails = False
               object vwl_baseColumn1: TcxGridDBColumn
                 Caption = 'Descri'#231#227'o'
                 DataBinding.FieldName = 'AGC_Descricao'
@@ -487,9 +494,37 @@ object F_Sobre: TF_Sobre
                 Options.Focusing = False
                 Width = 37
               end
+              object vwl_baseColumn5: TcxGridDBColumn
+                DataBinding.FieldName = 'AGC_Status'
+                Visible = False
+              end
+            end
+            object vwl_associacao: TcxGridDBTableView
+              Navigator.Buttons.CustomButtons = <>
+              DataController.DataSource = ds_associacao
+              DataController.DetailKeyFieldNames = 'AAC_AGC_Cod'
+              DataController.KeyFieldNames = 'AAC_Cod'
+              DataController.MasterKeyFieldNames = 'AGC_Cod'
+              DataController.Summary.DefaultGroupSummaryItems = <>
+              DataController.Summary.FooterSummaryItems = <>
+              DataController.Summary.SummaryGroups = <>
+              OptionsView.ColumnAutoWidth = True
+              OptionsView.GroupByBox = False
+              object vwl_associacaoColumn1: TcxGridDBColumn
+                Caption = 'Arquivo/A'#231#227'o associada'
+                DataBinding.FieldName = 'AAC_ARQ_Cod'
+                PropertiesClassName = 'TcxTextEditProperties'
+                Properties.Alignment.Horz = taLeftJustify
+                OnGetDisplayText = vwl_associacaoColumn1GetDisplayText
+                Options.Editing = False
+                Options.Focusing = False
+              end
             end
             object tbl_base: TcxGridLevel
               GridView = vwl_base
+              object tbl_associacao: TcxGridLevel
+                GridView = vwl_associacao
+              end
             end
           end
         end
@@ -499,6 +534,10 @@ object F_Sobre: TF_Sobre
       Caption = 'ts_CaixaCliente'
       ImageIndex = 4
       OnShow = ts_CaixaClienteShow
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object pnl_CaixaCliente: TPanel
         Left = 0
         Top = 49
@@ -3196,7 +3235,7 @@ object F_Sobre: TF_Sobre
     Left = 544
     Top = 112
     Bitmap = {
-      494C010101001C00300010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010101001C00480010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       00000000000000000000DCDCDC00C1C1C100C4C4C40000000000000000000000
@@ -3344,9 +3383,11 @@ object F_Sobre: TF_Sobre
     end
     object act_NovoCompromisso: TAction
       Caption = 'Novo compromisso para o dia...'
+      OnExecute = act_NovoCompromissoExecute
     end
     object act_ExcluirCompromisso: TAction
       Caption = 'Excluir compromissos do dia'
+      OnExecute = act_ExcluirCompromissoExecute
     end
   end
   object pm_agenda: TPopupMenu
@@ -3374,7 +3415,7 @@ object F_Sobre: TF_Sobre
     Left = 104
     Top = 72
     Bitmap = {
-      494C010103000500180020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103000500300020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -3919,5 +3960,27 @@ object F_Sobre: TF_Sobre
     DataSet = cds_dados
     Left = 240
     Top = 112
+  end
+  object cds_associacao: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 264
+    Top = 136
+  end
+  object ds_associacao: TDataSource
+    DataSet = cds_associacao
+    Left = 320
+    Top = 136
+  end
+  object cds_Arquivo: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 264
+    Top = 184
+  end
+  object ds_Arquivo: TDataSource
+    DataSet = cds_Arquivo
+    Left = 320
+    Top = 184
   end
 end

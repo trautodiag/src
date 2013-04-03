@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ActnList, ComCtrls, StdCtrls, Buttons, ExtCtrls, DBClient, Unt_Util,
-  ImgList, Unt_ImagePanel, db, StrUtils, dxSkinsCore, dxSkinOffice2010Blue,
+  ImgList, db, StrUtils, dxSkinsCore, dxSkinOffice2010Blue,
   dxSkinscxPCPainter, cxGraphics, cxControls, cxLookAndFeels,
   cxLookAndFeelPainters, Menus, cxContainer, cxEdit, cxGroupBox, cxRadioGroup,
   cxButtons, cxPC, cxTextEdit, cxScrollBox, cxStyles, cxCustomData, cxFilter,
@@ -51,6 +51,7 @@ type
     grid_base: TcxGrid;
     cds_dados: TClientDataSet;
     ds_dados: TDataSource;
+    stylo_base: TcxStyleRepository;
     procedure FormShow(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure FormResize(Sender: TObject);
@@ -68,17 +69,17 @@ type
     procedure vwl_baseCellDblClick(Sender: TcxCustomGridTableView;
       ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
       AShift: TShiftState; var AHandled: Boolean);
+    procedure vwl_baseCellClick(Sender: TcxCustomGridTableView;
+      ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
+      AShift: TShiftState; var AHandled: Boolean);
   private
     FTabelaAtualizar: TClientDataSet;
     FFieldTab: string;
     FIndexImg: Integer;
     FFieldChave: string;
     FFieldData: string;
-    FPesquisa: Boolean;
-    FTabelaDataSource: TDataSource;
     { Private declarations }
     //procedure LimpaIcons;
-    procedure AtualizaResgistros(var Msg: TMessage); message WM_SALVO;
     procedure SetTabelaAtualizar(const Value: TClientDataSet);
     procedure SetValor(const Value: string);
     procedure SetIndexImg(const Value: Integer);
@@ -99,6 +100,9 @@ type
     class function IniciaPesquisa(const APesquisa: Boolean = true): OleVariant;
     { Public declarations }
   protected
+    FPesquisa: Boolean;
+    FTabelaDataSource: TDataSource;
+    procedure AtualizaResgistros(var Msg: TMessage); message WM_SALVO;
     procedure SetInformacoes(ATabelaAtualizar: TClientDataSet; AFieldTab, AFieldChave, AFieldData: string; const AIndexImg:Integer = -1);virtual;
     procedure DblClica(Sender: TObject); virtual;
     //procedure OrganizaIcons(const ATipo: TOrganiza = orgCod);
@@ -565,6 +569,13 @@ end;
 procedure TF_BaseAnCad.SetValor(const Value: string);
 begin
   FFieldTab := Value;
+end;
+
+procedure TF_BaseAnCad.vwl_baseCellClick(Sender: TcxCustomGridTableView;
+  ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
+  AShift: TShiftState; var AHandled: Boolean);
+begin
+  TabelaAtualizar.Locate(FieldChave, cds_dados.FieldByName(FieldChave).AsInteger, []);
 end;
 
 procedure TF_BaseAnCad.vwl_baseCellDblClick(Sender: TcxCustomGridTableView;

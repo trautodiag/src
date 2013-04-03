@@ -18,7 +18,8 @@ uses
   dxSkinWhiteprint, dxSkinXmas2008Blue, dxSkinscxPCPainter, cxGraphics,
   cxControls, cxLookAndFeels, cxLookAndFeelPainters, dxSkinsForm, cxPC,
   StdCtrls, cxButtons, ExtCtrls, dxGDIPlusClasses, ImgList, ShellApi, Unt_Util,
-  Unt_Sobre, Unt_UpDown, dxScreenTip, dxCustomHint, cxHint, MidasLib, Registry;
+  Unt_Sobre, Unt_UpDown, dxScreenTip, dxCustomHint, cxHint, MidasLib, Registry,
+  dxAlertWindow, DB, DBClient;
 
 type
   TTypWinBits = (Bit32, Bit64);
@@ -87,6 +88,10 @@ type
     act_ArquivoCliente: TAction;
     Arquivodocliente1: TMenuItem;
     act_AgendaCompCad: TAction;
+    alerta_base: TdxAlertWindowManager;
+    imgLst_base: TImageList;
+    cds_Compromissos: TClientDataSet;
+    ilLst_BotoesMess: TImageList;
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure act_SairExecute(Sender: TObject);
     procedure FormShow(Sender: TObject);

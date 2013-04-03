@@ -31,6 +31,7 @@ object F_BaseAnCad: TF_BaseAnCad
     Properties.ActivePage = ts_base
     Properties.CustomButtons.Buttons = <>
     Properties.HideTabs = True
+    LookAndFeel.SkinName = 'Office2010Blue'
     ClientRectBottom = 486
     ClientRectLeft = 1
     ClientRectRight = 779
@@ -164,6 +165,7 @@ object F_BaseAnCad: TF_BaseAnCad
           Height = 399
           Align = alClient
           TabOrder = 0
+          LookAndFeel.SkinName = 'Office2010Blue'
           object vwl_base: TcxGridDBTableView
             Navigator.Buttons.CustomButtons = <>
             Navigator.Buttons.First.Visible = False
@@ -185,6 +187,7 @@ object F_BaseAnCad: TF_BaseAnCad
             Navigator.Buttons.Filter.Visible = False
             Navigator.InfoPanel.DisplayMask = '[RecordIndex] de [RecordCount]'
             Navigator.Visible = True
+            OnCellClick = vwl_baseCellClick
             OnCellDblClick = vwl_baseCellDblClick
             DataController.DataSource = ds_dados
             DataController.Summary.DefaultGroupSummaryItems = <>
@@ -229,7 +232,7 @@ object F_BaseAnCad: TF_BaseAnCad
     Left = 208
     Top = 160
     Bitmap = {
-      494C010105001800580080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010105001800680080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000000200000001000001002000000000000000
       0800000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -17142,5 +17145,10 @@ object F_BaseAnCad: TF_BaseAnCad
     DataSet = cds_dados
     Left = 368
     Top = 136
+  end
+  object stylo_base: TcxStyleRepository
+    Left = 480
+    Top = 144
+    PixelsPerInch = 96
   end
 end

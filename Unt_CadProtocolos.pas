@@ -9,7 +9,7 @@ uses
   Menus, ActnList, StdCtrls, cxButtons, ExtCtrls, cxPC, Unit_DM, db, Mask,
   DBCtrls, cxContainer, cxEdit, cxScrollBox, cxCurrencyEdit, cxDBEdit, DBClient,
   cxTextEdit, cxMaskEdit, cxDropDownEdit, cxCalendar, Unt_CadAnClientes, Unt_CadAnDocumentos,
-  Unt_ImagePanel, ImgList, cxStyles, cxCustomData, cxFilter, cxData,
+  ImgList, cxStyles, cxCustomData, cxFilter, cxData,
   cxDataStorage, cxDBData, cxGridLevel, cxGridCustomTableView, cxGridTableView,
   cxGridDBTableView, cxClasses, cxGridCustomView, cxGrid, dxSkinBlack,
   dxSkinBlue, dxSkinBlueprint, dxSkinCaramel, dxSkinCoffee, dxSkinDarkRoom,

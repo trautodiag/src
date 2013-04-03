@@ -416,10 +416,43 @@ object DM: TDM
     object cds_AgendaCompromissoAGC_Minuto: TIntegerField
       FieldName = 'AGC_Minuto'
     end
+    object cds_AgendaCompromissoAGC_Alerta: TBooleanField
+      FieldName = 'AGC_Alerta'
+    end
+    object cds_AgendaCompromissoAGC_ArqExec: TBooleanField
+      FieldName = 'AGC_ArqExec'
+    end
   end
   object ds_AgendaCompromisso: TDataSource
     DataSet = cds_AgendaCompromisso
     Left = 232
+    Top = 240
+  end
+  object cds_acoesAgComp: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    BeforeInsert = cds_acoesAgCompBeforeInsert
+    AfterCancel = cds_acoesAgCompAfterCancel
+    AfterDelete = cds_acoesAgCompAfterDelete
+    OnNewRecord = cds_acoesAgCompNewRecord
+    Left = 352
+    Top = 176
+    object cds_acoesAgCompAAC_Cod: TAutoIncField
+      FieldName = 'AAC_Cod'
+    end
+    object cds_acoesAgCompAAC_AGC_Cod: TIntegerField
+      FieldName = 'AAC_AGC_Cod'
+    end
+    object cds_acoesAgCompAAC_ARQ_Cod: TIntegerField
+      FieldName = 'AAC_ARQ_Cod'
+    end
+    object cds_acoesAgCompAAC_Tipo: TIntegerField
+      FieldName = 'AAC_Tipo'
+    end
+  end
+  object ds_acoesAgComp: TDataSource
+    DataSet = cds_acoesAgComp
+    Left = 352
     Top = 240
   end
 end
