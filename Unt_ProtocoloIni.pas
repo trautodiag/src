@@ -21,7 +21,7 @@ uses
   dxSkinValentine, dxSkinVS2010, dxSkinWhiteprint, dxSkinXmas2008Blue,
   dxGDIPlusClasses, ImgList, Unt_CadAnEmpresas, dxScreenTip, dxCustomHint,
   cxHint, Unt_CadAnProtocolos, Unt_CadAnArquivo, Unt_CadAnAgendaCompromisso, Unt_Util,
-  DB, DBClient, DateUtils, dxAlertWindow, ComObj;
+  DB, DBClient, DateUtils, dxAlertWindow, ComObj, jpeg;
 
 type
   TF_ProtocoloIni = class(TF_BaseIni)
@@ -44,6 +44,7 @@ type
     procedure AtualizaResgistros(var Msg: TMessage); message WM_SALVO;
     function Intervalo(AHora, AMinuto: Word): Integer;
     procedure CriaAtertaCompromisso(ADados: OleVariant);
+    procedure SetRegistroArquivo(AStream: TMemoryStream; AExtens, ANomeArquivo: string);
   public
     { Public declarations }
   end;
@@ -195,7 +196,7 @@ begin
                                 cs_CapturaTela:
                                   begin
                                     //teste
-                                    CapituraTela.SaveToFile(ExtractFileDir(Application.ExeName)+'/'+FormatDateTime('yyyymmddhhnnsszzz', Now)+'.bmp');
+                                    CapituraTela.SaveToFile(ExtractFileDir(Application.ExeName)+'/'+FormatDateTime('yyyymmddhhnnsszzz', Now)+'.screeen');
                                   end;
                               end;
                             end;
@@ -279,11 +280,71 @@ begin
   end;
 end;
 
+procedure TF_ProtocoloIni.SetRegistroArquivo(AStream: TMemoryStream; AExtens, ANomeArquivo: string);
+var
+  dirBase, CodCliente, dirArq: string;
+  dataAux: TClientDataSet;
+begin
+  //Teste
+  CodCliente:= '1';
+
+  dirBase:= Trim(ExtractFileDir(Application.ExeName)+'\CLIENTES\'+Trim(CodCliente));
+  if not DirectoryExists(dirBase) then
+  begin
+    ForceDirectories(dirBase);
+  end;
+
+  if not DirectoryExists(dirBase+'\'+Trim(UpperCase(AExtens))) then
+    ForceDirectories(dirBase+'\'+Trim(UpperCase(AExtens)));
+
+  if DirectoryExists(dirBase+'\'+Trim(UpperCase(AExtens))) then
+    begin
+      if not DM.cds_pasta.Locate('PST_Nome;PST_CLI_Cod', VarArrayOf([Trim(UpperCase(AExtens)), CodCliente]) , []) then
+        begin
+          DM.cds_pasta.Insert;
+          DM.cds_pasta.FieldByName('PST_CLI_Cod').AsInteger:= StrToInt(CodCliente);
+          DM.cds_pasta.FieldByName('PST_Nome').AsString:= AExtens;
+          DM.cds_pasta.FieldByName('PST_Path').AsString:= dirBase+'\'+DM.cds_pasta.FieldByName('PST_Nome').AsString;
+          DM.cds_pasta.Post;
+        end;
+    end;
+
+  dirArq:= dirBase+'\'+Trim(UpperCase(AExtens))+'\';
+  if DirectoryExists(dirArq) then
+    begin
+      dataAux:= TClientDataSet.Create(Self);
+      dataAux.Data:= DM.cds_arquivo.Data;
+      with TJPEGImage.Create do
+        begin
+          try
+            LoadFromStream(AStream);
+            SaveToFile(dirBase+'\'+Trim(UpperCase(AExtens))+'\'+ANomeArquivo+AExtens);
+          finally
+            Free;
+          end;
+        end;
+      if FileExists(dirBase+'\'+Trim(UpperCase(AExtens))+'\'+ANomeArquivo+AExtens) then
+        begin
+          DM.cds_arquivo.Insert;
+          DM.cds_arquivo.FieldByName('ARQ_PST_Cod').AsInteger:= DM.cds_pasta.FieldByName('PST_Cod').AsInteger;
+          DM.cds_arquivo.FieldByName('ARQ_Nome').AsString:= ANomeArquivo+'.'+AExtens;
+          dataAux.Free;
+          DM.cds_arquivo.FieldByName('ARQ_NomeGuid').AsString:= NovoGuid+'.'+AExtens;
+          DM.cds_arquivo.FieldByName('ARQ_Path').AsString:= dirBase+'\'+Trim(UpperCase(AExtens))+'\'+DM.cds_arquivo.FieldByName('ARQ_NomeGuid').AsString;
+          DM.cds_arquivo.FieldByName('Data').AsDateTime:= Now;
+          DM.cds_arquivo.Post;
+          RenameFile(dirBase+'\'+Trim(UpperCase(AExtens))+'\'+DM.cds_arquivo.FieldByName('ARQ_Nome').AsString, DM.cds_arquivo.FieldByName('ARQ_Path').AsString)
+        end;
+    end;
+end;
+
 procedure TF_ProtocoloIni.tm_CompromissosTimer(Sender: TObject);
 var
   IntervaloTmp: Integer;
   voz : OleVariant;
   ClientAux, ClientAux2: TClientDataSet;
+  Stream: TMemoryStream;
+  jpeg: TJPEGImage;
 begin
   inherited;
   tm_Compromissos.Enabled:= (not cds_Compromissos.IsEmpty);
@@ -356,7 +417,18 @@ begin
                                               cs_CapturaTela:
                                                 begin
                                                   //teste
-                                                  CapituraTela.SaveToFile(ExtractFileDir(Application.ExeName)+'/'+FormatDateTime('yyyymmddhhnnsszzz', Now)+'.bmp');
+                                                  Stream:= TMemoryStream.Create;
+                                                  try
+                                                    jpeg:= CapituraTela;
+                                                    jpeg.SaveToStream(Stream);
+                                                    try
+                                                      SetRegistroArquivo(Stream, 'SCREEN', 'USUARIOTESTE');
+                                                    finally
+                                                      jpeg.Free;
+                                                    end;
+                                                  finally
+                                                    Stream.Free;
+                                                  end;
                                                 end;  
                                             end;
                                           end;

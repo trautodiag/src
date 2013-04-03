@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Classes, Messages, ActiveX, SysUtils, DBClient, db, Forms, Unit_DM, Dialogs,
-  ShellAPI, Graphics, GraphUtil;
+  ShellAPI, Graphics, GraphUtil, jpeg;
 
 const
   WM_SALVO    = WM_APP + 500;
@@ -39,29 +39,55 @@ procedure VerificaArquivos(const AData: OleVariant);
 procedure PropriedadeArquivo(AArquivo: String; APropriedades: TStringList);
 function TamanhoDaPastaT(APasta: String): string;
 procedure ExecFileArq(F: String; AHandle: THandle);
+procedure CopyFile(FromFileName, ToFileName: string; AHandle: THandle);
 
 //Funções do sistema
-function CapituraTela: TBitmap;
+function CapituraTela: TJPEGImage;
 
 implementation
 
-function CapituraTela: TBitmap;
+procedure CopyFile(FromFileName, ToFileName: string; AHandle: THandle);
+var
+  shellinfo: TSHFileOpStructA;
+  Files:String;
+begin
+  Files:=FromFileName+#0+#0;
+  with shellinfo do
+  begin
+    Wnd:=AHandle;
+    wFunc:=FO_COPY;
+    pFrom:=PChar(Files);
+    pTo:=PChar(ToFileName);
+    fFlags:=FOF_NOCONFIRMATION or FOF_SILENT;
+  end;
+  SHFileOperation(shellinfo);
+end;
+
+function CapituraTela: TJPEGImage;
 var
   dc: HDC;
   cv: TCanvas;
+  btm: TBitmap;
 begin
-  Result:= TBitmap.Create;
-  Result.Width:= Screen.Width;
-  Result.Height:= Screen.Height;
-  dc:= GetDC(0);
-  cv:= TCanvas.Create;
+  btm:= TBitmap.Create;
   try
-    cv.Handle:= dc;
-    Result.Canvas.CopyRect(Rect(0, 0, Screen.Width, Screen.Height), cv, Rect(0, 0, Screen.Width, Screen.Height));
+    btm.Width:= Screen.Width;
+    btm.Height:= Screen.Height;
+    dc:= GetDC(0);
+    cv:= TCanvas.Create;
+    try
+      cv.Handle:= dc;
+      btm.Canvas.CopyRect(Rect(0, 0, Screen.Width, Screen.Height), cv, Rect(0, 0, Screen.Width, Screen.Height));
+    finally
+      cv.Free;
+    end;
+    ReleaseDC(0, dc);
+    Result:= TJPEGImage.Create;
+    Result.Assign(btm);
   finally
-    cv.Free;
+    btm.Free;
   end;
-  ReleaseDC(0, dc);
+  Result.CompressionQuality:= 90;
 end;
 
 procedure ExecFileArq(F: String; AHandle: THandle);
