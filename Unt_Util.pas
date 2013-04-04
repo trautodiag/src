@@ -4,7 +4,13 @@ interface
 
 uses
   Windows, Classes, Messages, ActiveX, SysUtils, DBClient, db, Forms, Unit_DM, Dialogs,
-  ShellAPI, Graphics, GraphUtil, jpeg, Controls;
+  ShellAPI, Graphics, GraphUtil, jpeg, Controls, TlHelp32;
+
+type
+  PTokenUser = ^TTokenUser;
+  TTokenUser = packed record
+    User: SID_AND_ATTRIBUTES;
+  end;
 
 const
   WM_SALVO    = WM_APP + 500;
@@ -33,9 +39,19 @@ const
   cs_DesligaPC = -4;
   cs_Reinicializa = -5;
   cs_DesligaSeguro = -6;
+  cs_ListarProcessos = -7;
+
+  cs_FuncoesPre = [(cs_CapturaTela * (-1)),
+                   (cs_FinalizaProcessosForce * (-1)),
+                   (cs_Logout * (-1)),
+                   (cs_DesligaPC * (-1)),
+                   (cs_Reinicializa * (-1)),
+                   (cs_DesligaSeguro * (-1)),
+                   (cs_ListarProcessos * (-1))];
 
   //Extenções
   cs_SCREEN = 'SCREEN';
+  cs_PROCESS = 'PROCESS';
 
   //cs_FuncoesPre = [cs_CapturaTela];
 
@@ -48,11 +64,111 @@ procedure PropriedadeArquivo(AArquivo: String; APropriedades: TStringList);
 function TamanhoDaPastaT(APasta: String): string;
 procedure ExecFileArq(F: String; AHandle: THandle);
 procedure CopyFile(FromFileName, ToFileName: string; AHandle: THandle);
+function SetDescricaoFuncaoPre(ACodigoFuncao: Integer): string;
+procedure ListaProcessos(AStream: TMemoryStream);
+function GetProcessUserName(ProcessID: Cardinal; out DomainName, UserName: string): Boolean;
 
 //Funções do sistema
 function CapituraTela: TBitmap;
 
 implementation
+
+function GetProcessUserName(ProcessID: Cardinal; out DomainName, UserName: string): Boolean;
+var
+  ProcessHandle, ProcessToken: THandle;
+  InfoSize, UserNameSize, DomainNameSize: Cardinal;
+  User: PTokenUser;
+  Use: SID_NAME_USE;
+  _DomainName, _UserName: array[0..255] of Char;
+begin
+  Result := False;
+  DomainName := '';
+  UserName := '';
+
+  ProcessHandle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, False, ProcessID);
+  if ProcessHandle = 0 then
+    Exit;
+
+  try
+    if not OpenProcessToken(ProcessHandle, TOKEN_QUERY, ProcessToken) then
+      Exit;
+
+    try
+      GetTokenInformation(ProcessToken, TokenUser, nil, 0, InfoSize);
+      User := AllocMem(InfoSize * 2);
+      try
+        if GetTokenInformation(ProcessToken, TokenUser, User, InfoSize * 2, InfoSize) then
+        begin
+          DomainNameSize := SizeOf(_DomainName);
+          UserNameSize := SizeOf(_UserName);
+
+          Result := LookupAccountSid(nil, User^.User.Sid, _UserName, UserNameSize, _DomainName, DomainNameSize, Use);
+
+          if Result then
+          begin
+            SetString(DomainName, _DomainName, StrLen(_DomainName));
+            SetString(UserName, _UserName, StrLen(_UserName));
+          end;
+        end;
+      finally
+        FreeMem(User);
+      end;
+    finally
+      CloseHandle(ProcessToken);
+    end;
+  finally
+    CloseHandle(ProcessHandle);
+  end;
+end;
+
+procedure ListaProcessos(AStream: TMemoryStream);
+var
+  Process                     : TStringList;
+  ContinueLoop                : BOOL;
+  FSnapshotHandle             : THandle;
+  FProcessEntry32             : TProcessEntry32;
+  Dominio, User               : string;
+  i: Integer;
+begin
+  i:= 0;
+  Process:= TStringList.Create;
+  try
+    FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
+
+    ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
+    Process.Add('Lista de processos em '+FormatDateTime('yyyy-mm-dd hh:nn:ss.zzz', now));
+    Process.Add('');
+    while ContinueLoop {and (not Boolean(Result))} do
+    begin
+      inc(i);
+      GetProcessUserName(FProcessEntry32.th32ProcessID, Dominio, User);
+      if i > 2 then
+        Process.Add(FProcessEntry32.szExeFile + ' - '+ Dominio+ ' - '+ User)
+      else
+        Process.Add(FProcessEntry32.szExeFile);
+      ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
+    end;
+    Process.SaveToStream(AStream);
+  finally
+    Process.Free;
+  end;
+end;
+
+function SetDescricaoFuncaoPre(ACodigoFuncao: Integer): string;
+begin
+  case ACodigoFuncao of
+    cs_CapturaTela:            Result:= 'Capturar tela';
+    cs_FinalizaProcessosForce: Result:= 'Forçar o desligamento do computador';
+    cs_Logout:                 Result:= 'Faz "logout" do sistema';
+    cs_DesligaPC:              Result:= 'Desliga o computador';
+    cs_Reinicializa:           Result:= 'Reinicializa o computador';
+    cs_DesligaSeguro:          Result:= 'Desliga o computador com segurança';
+    cs_ListarProcessos:        Result:= 'Lista de processos';
+  else
+    Result:= 'Função nao definida ou não existe';
+  end;
+end;
 
 procedure CopyFile(FromFileName, ToFileName: string; AHandle: THandle);
 var
