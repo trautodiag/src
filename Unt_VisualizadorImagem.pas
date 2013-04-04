@@ -19,22 +19,21 @@ uses
   cxCustomData, cxFilter, cxData, cxDataStorage, cxEdit, DB, cxDBData, ExtCtrls,
   DBClient, cxGridCustomTableView, cxGridCardView, cxGridDBCardView,
   cxGridCustomView, cxGridCustomLayoutView, cxClasses, cxGridLevel, cxGrid, cxPC,
-  cxImage;
+  cxImage, cxSplitter, cxScrollBox;
 
 type
   TCanSize = (csLeft, csUp, csRight, csDown);
   TCanSizes = set of TCanSize;
 
   TF_VisualizadorImagem = class(TForm)
-    cxPageControl1: TcxPageControl;
-    tab_visualizador: TcxTabSheet;
-    pnl_imagens: TPanel;
-    cxGrid1Level1: TcxGridLevel;
+    cds_Imagens: TClientDataSet;
+    ds_imagens: TDataSource;
     cxGrid1: TcxGrid;
     cxGrid1DBCardView1: TcxGridDBCardView;
     cxGrid1DBCardView1Row1: TcxGridDBCardViewRow;
-    cds_Imagens: TClientDataSet;
-    ds_imagens: TDataSource;
+    cxGrid1Level1: TcxGridLevel;
+    cxSplitter1: TcxSplitter;
+    cxscrlbx_base: TcxScrollBox;
     img_Base: TImage;
     procedure FormShow(Sender: TObject);
     procedure img_BaseMouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -46,9 +45,12 @@ type
     procedure cxGrid1DBCardView1CellClick(Sender: TcxCustomGridTableView;
       ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
       AShift: TShiftState; var AHandled: Boolean);
+    procedure cds_ImagensAfterScroll(DataSet: TDataSet);
   private
     { Private declarations }
     FCanSizes : TCanSizes; //Declaração de variável importante
+    procedure SetImagem(AStream: TMemoryStream);
+    procedure SetPosicaoImagem;
   public
     { Public declarations }
     class procedure Inicia(ADados: OleVariant);
@@ -68,6 +70,18 @@ implementation
 
 {$R *.dfm}
 
+procedure TF_VisualizadorImagem.cds_ImagensAfterScroll(DataSet: TDataSet);
+var
+  stream: TMemoryStream;
+begin
+  stream:= TMemoryStream.Create;
+  try
+    SetImagem(stream);
+  finally
+    stream.Free
+  end; 
+end;
+
 procedure TF_VisualizadorImagem.cxGrid1DBCardView1CellClick(
   Sender: TcxCustomGridTableView; ACellViewInfo: TcxGridTableDataCellViewInfo;
   AButton: TMouseButton; AShift: TShiftState; var AHandled: Boolean);
@@ -79,21 +93,7 @@ begin
   try
     if ACellViewInfo.GridRecord.Values[cxGrid1DBCardView1Row1.Index] <> null then
       begin
-        TGraphicField(cds_Imagens.FieldByName('Imagem')).SaveToStream(stream);
-        stream.Position:= 0;
-        btn:= TBitmap.Create;
-        with btn do
-          begin
-            try
-              LoadFromStream(stream);
-              img_Base.Width:= btn.Width;
-              img_Base.Height:= btn.Height;
-            finally
-              btn.Free;
-            end;
-          end;
-        stream.Position:= 0;
-        img_Base.Picture.Bitmap.LoadFromStream(stream);
+        SetImagem(stream);
       end;
   finally
     stream.Free
@@ -272,6 +272,34 @@ begin
         Free;
       end;
     end;
+end;
+
+procedure TF_VisualizadorImagem.SetImagem(AStream: TMemoryStream);
+var
+  btn: TBitmap;
+begin
+  TGraphicField(cds_Imagens.FieldByName('Imagem')).SaveToStream(AStream);
+  AStream.Position:= 0;
+  btn:= TBitmap.Create;
+  with btn do
+    begin
+      try
+        LoadFromStream(AStream);
+        img_Base.Width:= btn.Width;
+        img_Base.Height:= btn.Height;
+      finally
+        btn.Free;
+      end;
+    end;
+  AStream.Position:= 0;
+  img_Base.Picture.Bitmap.LoadFromStream(AStream);
+  SetPosicaoImagem;
+end;
+
+procedure TF_VisualizadorImagem.SetPosicaoImagem;
+begin
+  img_Base.Top:= 0;
+  img_Base.Left:= 0;
 end;
 
 end.

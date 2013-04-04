@@ -19,93 +19,80 @@ object F_VisualizadorImagem: TF_VisualizadorImagem
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object cxPageControl1: TcxPageControl
+  object cxGrid1: TcxGrid
+    Left = 672
+    Top = 0
+    Width = 213
+    Height = 574
+    Align = alRight
+    Constraints.MaxWidth = 213
+    TabOrder = 0
+    object cxGrid1DBCardView1: TcxGridDBCardView
+      Navigator.Buttons.CustomButtons = <>
+      OnCellClick = cxGrid1DBCardView1CellClick
+      DataController.DataSource = ds_imagens
+      DataController.Summary.DefaultGroupSummaryItems = <>
+      DataController.Summary.FooterSummaryItems = <>
+      DataController.Summary.SummaryGroups = <>
+      OptionsView.CardIndent = 7
+      object cxGrid1DBCardView1Row1: TcxGridDBCardViewRow
+        DataBinding.FieldName = 'Imagem'
+        PropertiesClassName = 'TcxImageProperties'
+        Properties.PopupMenuLayout.MenuItems = [pmiCustom]
+        Options.Editing = False
+        Options.Filtering = False
+        Options.FilteringFilteredItemsList = False
+        Options.FilteringMRUItemsList = False
+        Options.FilteringPopup = False
+        Options.FilteringPopupMultiSelect = False
+        Options.Focusing = False
+        Options.IncSearch = False
+        Options.ShowCaption = False
+        Position.BeginsLayer = True
+        Position.LineCount = 6
+        IsCaptionAssigned = True
+      end
+    end
+    object cxGrid1Level1: TcxGridLevel
+      GridView = cxGrid1DBCardView1
+    end
+  end
+  object cxSplitter1: TcxSplitter
+    Left = 664
+    Top = 0
+    Width = 8
+    Height = 574
+    AlignSplitter = salRight
+    Control = cxGrid1
+    ExplicitLeft = 730
+  end
+  object cxscrlbx_base: TcxScrollBox
     Left = 0
     Top = 0
-    Width = 885
+    Width = 664
     Height = 574
     Align = alClient
-    TabOrder = 0
-    Properties.ActivePage = tab_visualizador
-    Properties.CustomButtons.Buttons = <>
-    Properties.HideTabs = True
-    ExplicitLeft = 280
-    ExplicitTop = 104
-    ExplicitWidth = 289
-    ExplicitHeight = 193
-    ClientRectBottom = 573
-    ClientRectLeft = 1
-    ClientRectRight = 884
-    ClientRectTop = 1
-    object tab_visualizador: TcxTabSheet
-      Caption = 'tab_visualizador'
-      ImageIndex = 0
-      object img_Base: TImage
-        Left = 0
-        Top = 0
-        Width = 209
-        Height = 161
-        Center = True
-        Stretch = True
-        OnMouseDown = img_BaseMouseDown
-        OnMouseMove = img_BaseMouseMove
-        OnMouseUp = img_BaseMouseUp
-      end
-      object pnl_imagens: TPanel
-        Left = 711
-        Top = 0
-        Width = 172
-        Height = 572
-        Align = alRight
-        BevelOuter = bvNone
-        TabOrder = 0
-        object cxGrid1: TcxGrid
-          Left = 0
-          Top = 0
-          Width = 172
-          Height = 572
-          Align = alClient
-          TabOrder = 0
-          ExplicitLeft = 64
-          ExplicitTop = 224
-          ExplicitWidth = 250
-          ExplicitHeight = 200
-          object cxGrid1DBCardView1: TcxGridDBCardView
-            Navigator.Buttons.CustomButtons = <>
-            OnCellClick = cxGrid1DBCardView1CellClick
-            DataController.DataSource = ds_imagens
-            DataController.Summary.DefaultGroupSummaryItems = <>
-            DataController.Summary.FooterSummaryItems = <>
-            DataController.Summary.SummaryGroups = <>
-            OptionsView.CardIndent = 7
-            object cxGrid1DBCardView1Row1: TcxGridDBCardViewRow
-              DataBinding.FieldName = 'Imagem'
-              PropertiesClassName = 'TcxImageProperties'
-              Properties.PopupMenuLayout.MenuItems = [pmiCustom]
-              Options.Editing = False
-              Options.Filtering = False
-              Options.FilteringFilteredItemsList = False
-              Options.FilteringMRUItemsList = False
-              Options.FilteringPopup = False
-              Options.FilteringPopupMultiSelect = False
-              Options.Focusing = False
-              Options.IncSearch = False
-              Options.ShowCaption = False
-              Position.BeginsLayer = True
-              Position.LineCount = 6
-              IsCaptionAssigned = True
-            end
-          end
-          object cxGrid1Level1: TcxGridLevel
-            GridView = cxGrid1DBCardView1
-          end
-        end
-      end
+    TabOrder = 2
+    ExplicitLeft = 128
+    ExplicitTop = 224
+    ExplicitWidth = 185
+    ExplicitHeight = 41
+    object img_Base: TImage
+      Left = 0
+      Top = 0
+      Width = 209
+      Height = 161
+      Center = True
+      Stretch = True
+      OnMouseDown = img_BaseMouseDown
+      OnMouseMove = img_BaseMouseMove
+      OnMouseUp = img_BaseMouseUp
     end
   end
   object cds_Imagens: TClientDataSet
     Aggregates = <>
     Params = <>
+    AfterScroll = cds_ImagensAfterScroll
     Left = 280
     Top = 184
   end

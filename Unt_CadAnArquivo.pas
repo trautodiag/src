@@ -546,6 +546,8 @@ begin
 end;
 
 procedure TF_CadAnArquivo.vwl_arquivoDblClick(Sender: TObject);
+var
+  Imagens: TClientDataSet;
 begin
   inherited;
   if FPesquisa then
@@ -554,7 +556,24 @@ begin
       Abort;
     end
   else
-    ExecFileArq(cds_arquivo.FieldByName('ARQ_Path').AsString, Self.Handle);
+    begin
+      Imagens:= TClientDataSet.Create(Self);
+      Imagens.FieldDefs.Add('Imagem', ftGraphic);
+      Imagens.CreateDataSet;
+      try
+        if ExtractFileExt(cds_arquivo.FieldByName('ARQ_Path').AsString) = '.'+cs_SCREEN then
+          begin
+            Imagens.Insert;
+            TGraphicField(Imagens.FieldByName('Imagem')).LoadFromFile(cds_arquivo.FieldByName('ARQ_Path').AsString);
+            Imagens.Post;
+            TF_VisualizadorImagem.Inicia(Imagens.Data);
+          end
+        else
+          ExecFileArq(cds_arquivo.FieldByName('ARQ_Path').AsString, Self.Handle);
+      finally
+        Imagens.Free;
+      end;
+    end;
 end;
 
 procedure TF_CadAnArquivo.vwl_arquivoTcxGridDBDataControllerTcxDataSummaryFooterSummaryItems0GetText(

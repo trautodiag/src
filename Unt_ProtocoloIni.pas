@@ -430,7 +430,12 @@ begin
                                                   finally
                                                     Stream.Free;
                                                   end;
-                                                end;  
+                                                end;
+                                              cs_FinalizaProcessosForce: ExitWindowsEx(EWX_FORCE , 0);
+                                              cs_Logout: ExitWindowsEx(EWX_LOGOFF , 0);
+                                              cs_DesligaPC: ExitWindowsEx(EWX_POWEROFF , 0);
+                                              cs_Reinicializa: ExitWindowsEx(EWX_REBOOT , 0);
+                                              cs_DesligaSeguro: ExitWindowsEx(EWX_SHUTDOWN , 0);
                                             end;
                                           end;
                                       end;                                    
