@@ -99,6 +99,10 @@ object F_FuncoesPredefinidas: TF_FuncoesPredefinidas
           item
             Description = 'Desliga o computador com seguran'#231'a'
             Value = -6
+          end
+          item
+            Description = 'Lista de processos'
+            Value = -7
           end>
         TabOrder = 0
         Width = 444

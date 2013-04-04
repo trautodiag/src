@@ -11,7 +11,17 @@ uses
   cxGridCustomView, cxGridCustomTableView, cxGridTableView, cxGridDBTableView,
   cxGrid, StdCtrls, cxTextEdit, cxGroupBox, cxRadioGroup, cxButtons, ExtCtrls,
   cxPC, Unit_DM, Unt_CadAgendaCompromisso, DateUtils, VarUtils,
-  dxSkinOffice2007Blue, Unt_Util;
+  dxSkinOffice2007Blue, Unt_Util, dxSkinBlack, dxSkinBlue, dxSkinBlueprint,
+  dxSkinCaramel, dxSkinCoffee, dxSkinDarkRoom, dxSkinDarkSide,
+  dxSkinDevExpressDarkStyle, dxSkinDevExpressStyle, dxSkinFoggy,
+  dxSkinGlassOceans, dxSkinHighContrast, dxSkiniMaginary, dxSkinLilian,
+  dxSkinLiquidSky, dxSkinLondonLiquidSky, dxSkinMcSkin, dxSkinMoneyTwins,
+  dxSkinOffice2007Black, dxSkinOffice2007Green, dxSkinOffice2007Pink,
+  dxSkinOffice2007Silver, dxSkinOffice2010Black, dxSkinOffice2010Silver,
+  dxSkinPumpkin, dxSkinSeven, dxSkinSevenClassic, dxSkinSharp, dxSkinSharpPlus,
+  dxSkinSilver, dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008,
+  dxSkinTheAsphaltWorld, dxSkinsDefaultPainters, dxSkinValentine, dxSkinVS2010,
+  dxSkinWhiteprint, dxSkinXmas2008Blue;
 
 type
   TF_CadAnAgendaCompromisso = class(TF_BaseAnCad)
@@ -116,14 +126,9 @@ begin
       cds_Arquivo.Filtered:= True;
       if not cds_Arquivo.IsEmpty then
         AText:= cds_Arquivo.FieldByName('ARQ_Nome').AsString
-      else if StrToInt(AText) = cs_CapturaTela then
-        begin
-          case StrToInt(AText) of
-            -1 : AText:= 'Captura de tela';
-          end;
-        end
-      else           
-        AText:= 'Arquivo/Ação não identificado';
+      else
+        if (StrToInt(AText) * (-1)) in cs_FuncoesPre then
+          AText:= SetDescricaoFuncaoPre(StrToInt(AText));
     end
   else
     AText:= 'Arquivo/Ação não identificado';

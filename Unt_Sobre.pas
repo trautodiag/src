@@ -583,6 +583,8 @@ begin
   cds_associacao.Data:= DM.cds_acoesAgComp.Data;
   cds_associacao.IndexFieldNames:= 'AAC_AGC_Cod';
   cds_Arquivo.Data:= DM.cds_arquivo.Data;
+
+  grid_base.Refresh;
 end;
 
 procedure TF_Sobre.btn_OKClick(Sender: TObject);
@@ -675,14 +677,9 @@ begin
       cds_Arquivo.Filtered:= True;
       if not cds_Arquivo.IsEmpty then
         AText:= cds_Arquivo.FieldByName('ARQ_Nome').AsString
-      else if StrToInt(AText) = cs_CapturaTela then
-        begin
-          case StrToInt(AText) of
-            -1 : AText:= 'Captura de tela';
-          end;
-        end
-      else           
-        AText:= 'Arquivo/Ação não identificado';
+      else
+        if (StrToInt(AText) * (-1)) in cs_FuncoesPre then
+          AText:= SetDescricaoFuncaoPre(StrToInt(AText));
     end
   else
     AText:= 'Arquivo/Ação não identificado';

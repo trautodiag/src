@@ -314,16 +314,33 @@ begin
     begin
       dataAux:= TClientDataSet.Create(Self);
       dataAux.Data:= DM.cds_arquivo.Data;
-      with TBitmap.Create do
+      if AExtens = cs_SCREEN then
         begin
-          try
-            AStream.Position:= 0;
-            LoadFromStream(AStream);
-            SaveToFile(dirBase+'\'+Trim(UpperCase(AExtens))+'\'+ANomeArquivo+'.'+AExtens);
-          finally
-            Free;
-          end;
+          with TBitmap.Create do
+            begin
+              try
+                AStream.Position:= 0;
+                LoadFromStream(AStream);
+                SaveToFile(dirBase+'\'+Trim(UpperCase(AExtens))+'\'+ANomeArquivo+'.'+AExtens);
+              finally
+                Free;
+              end;
+            end;
+        end
+      else if AExtens = cs_PROCESS then
+        begin
+          with TStringList.Create do
+            begin
+              try
+                AStream.Position:= 0;
+                LoadFromStream(AStream);
+                SaveToFile(dirBase+'\'+Trim(UpperCase(AExtens))+'\'+ANomeArquivo+'.'+AExtens);
+              finally
+                Free;
+              end;
+            end;
         end;
+
       if FileExists(dirBase+'\'+Trim(UpperCase(AExtens))+'\'+ANomeArquivo+'.'+AExtens) then
         begin
           DM.cds_arquivo.Insert;
@@ -436,6 +453,16 @@ begin
                                               cs_DesligaPC: ExitWindowsEx(EWX_POWEROFF , 0);
                                               cs_Reinicializa: ExitWindowsEx(EWX_REBOOT , 0);
                                               cs_DesligaSeguro: ExitWindowsEx(EWX_SHUTDOWN , 0);
+                                              cs_ListarProcessos:
+                                                begin
+                                                  Stream:= TMemoryStream.Create;
+                                                  try
+                                                    ListaProcessos(Stream);
+                                                    SetRegistroArquivo(Stream, cs_PROCESS, 'USUARIOTESTE');
+                                                  finally
+                                                    Stream.Free;
+                                                  end;
+                                                end;
                                             end;
                                           end;
                                       end;                                    
