@@ -25,10 +25,6 @@ object F_FuncoesPredefinidas: TF_FuncoesPredefinidas
     Properties.ActivePage = tab_funcoes
     Properties.CustomButtons.Buttons = <>
     Properties.HideTabs = True
-    ExplicitLeft = 32
-    ExplicitTop = 56
-    ExplicitWidth = 289
-    ExplicitHeight = 193
     ClientRectBottom = 92
     ClientRectLeft = 1
     ClientRectRight = 459
@@ -36,8 +32,6 @@ object F_FuncoesPredefinidas: TF_FuncoesPredefinidas
     object tab_funcoes: TcxTabSheet
       Caption = 'tab_funcoes'
       ImageIndex = 0
-      ExplicitWidth = 525
-      ExplicitHeight = 241
       object lbl_fincao: TLabel
         Left = 7
         Top = 4
@@ -53,9 +47,6 @@ object F_FuncoesPredefinidas: TF_FuncoesPredefinidas
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitLeft = 184
-        ExplicitTop = 144
-        ExplicitWidth = 185
         DesignSize = (
           458
           41)
@@ -88,6 +79,26 @@ object F_FuncoesPredefinidas: TF_FuncoesPredefinidas
             Description = 'Capturar tela'
             ImageIndex = 0
             Value = -1
+          end
+          item
+            Description = 'For'#231'ar o desligamento do computador'
+            Value = -2
+          end
+          item
+            Description = 'Faz "logout" do sistema'
+            Value = -3
+          end
+          item
+            Description = 'Desliga o computador '
+            Value = -4
+          end
+          item
+            Description = 'Reinicializa o computador'
+            Value = -5
+          end
+          item
+            Description = 'Desliga o computador com seguran'#231'a'
+            Value = -6
           end>
         TabOrder = 0
         Width = 444

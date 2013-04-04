@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Classes, Messages, ActiveX, SysUtils, DBClient, db, Forms, Unit_DM, Dialogs,
-  ShellAPI, Graphics, GraphUtil, jpeg;
+  ShellAPI, Graphics, GraphUtil, jpeg, Controls;
 
 const
   WM_SALVO    = WM_APP + 500;
@@ -28,6 +28,11 @@ const
   cs_AAC_Tipo_FuncPre = 2;
 
   cs_CapturaTela = -1;
+  cs_FinalizaProcessosForce = -2;
+  cs_Logout = -3;
+  cs_DesligaPC = -4;
+  cs_Reinicializa = -5;
+  cs_DesligaSeguro = -6;
 
   //Extenções
   cs_SCREEN = 'SCREEN';
@@ -71,18 +76,20 @@ var
   dc: HDC;
   cv: TCanvas;
 begin
-    Result:= TBitmap.Create;
-    Result.Width:= Screen.Width;
-    Result.Height:= Screen.Height;
-    dc:= GetDC(0);
-    cv:= TCanvas.Create;
-    try
-      cv.Handle:= dc;
-      Result.Canvas.CopyRect(Rect(0, 0, Screen.Width, Screen.Height), cv, Rect(0, 0, Screen.Width, Screen.Height));
-    finally
-      cv.Free;
-    end;
-    ReleaseDC(0, dc);
+  Result:= TBitmap.Create;
+  Result.Width:= Screen.Width;
+  Result.Height:= Screen.Height;
+  dc:= GetDC(0);
+  cv:= TCanvas.Create;
+  try
+    cv.Handle:= dc;
+    Result.Canvas.CopyRect(Rect(0, 0, Screen.Width, Screen.Height), cv, Rect(0, 0, Screen.Width, Screen.Height));
+  finally
+    cv.Free;
+  end;
+  ReleaseDC(0, dc);
+  Result.Canvas.Font:= TForm(FindControl(FindWindow('TF_ProtocoloIni',nil))).Font;
+  Result.Canvas.TextOut(4, 4, FormatDateTime('yyyy-mm-dd hh:nn:ss', Now));
 end;
 
 procedure ExecFileArq(F: String; AHandle: THandle);
