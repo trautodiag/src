@@ -26,10 +26,6 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
     Properties.ActivePage = tab_processos
     Properties.CustomButtons.Buttons = <>
     Properties.HideTabs = True
-    ExplicitLeft = 184
-    ExplicitTop = 112
-    ExplicitWidth = 289
-    ExplicitHeight = 193
     ClientRectBottom = 592
     ClientRectLeft = 1
     ClientRectRight = 911
@@ -37,8 +33,6 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
     object tab_processos: TcxTabSheet
       Caption = 'tab_processos'
       ImageIndex = 0
-      ExplicitWidth = 287
-      ExplicitHeight = 191
       object cxGrid1: TcxGrid
         Left = 0
         Top = 0
@@ -47,8 +41,6 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
         Align = alClient
         TabOrder = 0
         LookAndFeel.SkinName = 'Office2007Blue'
-        ExplicitWidth = 778
-        ExplicitHeight = 399
         object cxGridDBTableView1: TcxGridDBTableView
           Navigator.Buttons.CustomButtons = <>
           Navigator.Buttons.First.Visible = False
@@ -87,6 +79,7 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
           OptionsData.Inserting = False
           OptionsView.NoDataToDisplayInfoText = 'N'#227'o h'#225' registros'
           OptionsView.ColumnAutoWidth = True
+          OptionsView.ExpandButtonsForEmptyDetails = False
           object cxGridDBTableView1Column2: TcxGridDBColumn
             DataBinding.FieldName = 'Data'
             Visible = False
@@ -120,8 +113,26 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
             Width = 152
           end
         end
+        object cxGrid1DBTableView1: TcxGridDBTableView
+          Navigator.Buttons.CustomButtons = <>
+          DataController.DataSource = ds_modulos
+          DataController.DetailKeyFieldNames = 'Servico_Codigo'
+          DataController.MasterKeyFieldNames = 'Codigo'
+          DataController.Summary.DefaultGroupSummaryItems = <>
+          DataController.Summary.FooterSummaryItems = <>
+          DataController.Summary.SummaryGroups = <>
+          object cxGrid1DBTableView1Column1: TcxGridDBColumn
+            DataBinding.FieldName = 'Nome'
+          end
+          object cxGrid1DBTableView1Column2: TcxGridDBColumn
+            DataBinding.FieldName = 'Path'
+          end
+        end
         object cxGridLevel1: TcxGridLevel
           GridView = cxGridDBTableView1
+          object cxGrid1Level1: TcxGridLevel
+            GridView = cxGrid1DBTableView1
+          end
         end
       end
     end
@@ -136,5 +147,16 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
     DataSet = cds_processosUni
     Left = 416
     Top = 184
+  end
+  object cds_modulos: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 512
+    Top = 264
+  end
+  object ds_modulos: TDataSource
+    DataSet = cds_modulos
+    Left = 448
+    Top = 264
   end
 end

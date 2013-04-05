@@ -235,9 +235,9 @@ begin
           end;
         CreateDataSet;
       end;
-    ModulosL:= TClientDataSet.Create(Application);
-    CriaEstruturaModulos(ModulosL);
-    ModulosL.DataSetField:= TDataSetField(Process.FieldByName('Modulos'));
+    //ModulosL:= TClientDataSet.Create(Application);
+    //CriaEstruturaModulos(ModulosL);
+    //ModulosL.DataSetField:= TDataSetField(Process.FieldByName('Modulos'));
     FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
 
@@ -268,9 +268,12 @@ begin
                     First;
                     while not eof do
                       begin
-                        ModulosL.AppendRecord([FieldByName('Servico_Codigo').AsInteger,
+                        TDataSetField(Process.FieldByName('Modulos')).DataSet.AppendRecord([FieldByName('Servico_Codigo').AsInteger,
                                                FieldByName('Nome').AsString,
                                                FieldByName('Path').AsString]);
+//                        ModulosL.AppendRecord([FieldByName('Servico_Codigo').AsInteger,
+//                                               FieldByName('Nome').AsString,
+//                                               FieldByName('Path').AsString]);
                         Next;
                       end;
                   end;
@@ -278,7 +281,8 @@ begin
                 Free;
               end;
             end;
-          Process.Post;
+          if Process.State in dsEditModes then
+            Process.Post;
         end;
       ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
     end;

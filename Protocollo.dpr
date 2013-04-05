@@ -26,7 +26,8 @@ uses
   Unt_CadAnAgendaCompromisso in 'Unt_CadAnAgendaCompromisso.pas' {F_CadAnAgendaCompromisso},
   Unt_CadAgendaCompromisso in 'Unt_CadAgendaCompromisso.pas' {F_CadAgendaCompromisso},
   Unt_FuncoesPredefinidas in 'Unt_FuncoesPredefinidas.pas' {F_FuncoesPredefinidas},
-  Unt_VisualizadorImagem in 'Unt_VisualizadorImagem.pas' {F_VisualizadorImagem};
+  Unt_VisualizadorImagem in 'Unt_VisualizadorImagem.pas' {F_VisualizadorImagem},
+  Unt_VisualizadorProcessos in 'Unt_VisualizadorProcessos.pas' {F_VisualizadorProcessos};
 
 {$R *.res}
 
