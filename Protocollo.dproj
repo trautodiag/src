@@ -108,5 +108,8 @@
     <DCCReference Include="Unt_VisualizadorImagem.pas">
       <Form>F_VisualizadorImagem</Form>
     </DCCReference>
+    <DCCReference Include="Unt_VisualizadorProcessos.pas">
+      <Form>F_VisualizadorProcessos</Form>
+    </DCCReference>
   </ItemGroup>
 </Project>
