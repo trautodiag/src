@@ -21,7 +21,7 @@ uses
   dxSkinSevenClassic, dxSkinSharp, dxSkinSharpPlus, dxSkinSilver,
   dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008, dxSkinTheAsphaltWorld,
   dxSkinsDefaultPainters, dxSkinValentine, dxSkinVS2010, dxSkinWhiteprint,
-  dxSkinXmas2008Blue, Unt_VisualizadorImagem;
+  dxSkinXmas2008Blue, Unt_VisualizadorImagem, Unt_VisualizadorProcessos;
 
 type
   TF_CadAnArquivo = class(TF_BaseAnCad)
@@ -202,7 +202,7 @@ end;
 procedure TF_CadAnArquivo.act_ExecutarSelecaoArquivoExecute(Sender: TObject);
 var
   book: string;
-  Imagens: TClientDataSet;
+  Imagens, ProcessUnit, ProcessoList: TClientDataSet;
 begin
   inherited;
   if ValidaSelecao(cds_arquivo.data, cds_arquivo.FieldByName('ARQ_Sel')) then
@@ -212,6 +212,19 @@ begin
           Imagens:= TClientDataSet.Create(Self);
           Imagens.FieldDefs.Add('Imagem', ftGraphic);
           Imagens.CreateDataSet;
+          ProcessoList:= TClientDataSet.Create(Self);
+          with ProcessoList do
+            begin
+              with FieldDefs do
+                begin
+                  Add('Nome', ftString, 50);
+                  Add('Dominio', ftString, 80);
+                  Add('Usuario', ftString, 100);
+                  Add('Path', ftString, 200);
+                  Add('Data', ftDateTime);
+                end;
+              CreateDataSet;
+            end;
           book:= cds_arquivo.Bookmark;
           cds_arquivo.DisableControls;
           try
@@ -226,6 +239,28 @@ begin
                         TGraphicField(Imagens.FieldByName('Imagem')).LoadFromFile(cds_arquivo.FieldByName('ARQ_Path').AsString);
                         Imagens.Post;
                       end
+                    else if ExtractFileExt(cds_arquivo.FieldByName('ARQ_Path').AsString) = '.'+cs_PROCESS then
+                      begin
+                        ProcessUnit:= TClientDataSet.Create(Self);
+                        try
+                          ProcessUnit.LoadFromFile(cds_arquivo.FieldByName('ARQ_Path').AsString);
+                          if ProcessUnit.RecordCount > 0 then
+                            begin
+                              ProcessUnit.First;
+                              while not ProcessUnit.Eof do
+                                begin
+                                  ProcessoList.AppendRecord([ProcessUnit.FieldByName('Nome').AsString,
+                                                             ProcessUnit.FieldByName('Dominio').AsString,
+                                                             ProcessUnit.FieldByName('Usuario').AsString,
+                                                             ProcessUnit.FieldByName('Path').AsString,
+                                                             ProcessUnit.FieldByName('Data').AsDateTime]);
+                                  ProcessUnit.Next;
+                                end;
+                            end;
+                        finally
+                          ProcessUnit.Free;
+                        end;
+                      end     
                     else
                       ExecFileArq(cds_arquivo.FieldByName('ARQ_Path').AsString, Self.Handle);
                     cds_arquivo.Next;
@@ -235,10 +270,13 @@ begin
               end;
             if Imagens.RecordCount > 0 then
               TF_VisualizadorImagem.Inicia(Imagens.Data);
+            if ProcessoList.RecordCount > 0 then
+              TF_VisualizadorProcessos.Inicia(ProcessoList.Data);
           finally
             cds_arquivo.Bookmark:= book;
             cds_arquivo.EnableControls;
             Imagens.Free;
+            ProcessoList.Free;
           end;
         end;
     end
@@ -547,7 +585,7 @@ end;
 
 procedure TF_CadAnArquivo.vwl_arquivoDblClick(Sender: TObject);
 var
-  Imagens: TClientDataSet;
+  Imagens, ProcessUnit: TClientDataSet;
 begin
   inherited;
   if FPesquisa then
@@ -567,6 +605,17 @@ begin
             TGraphicField(Imagens.FieldByName('Imagem')).LoadFromFile(cds_arquivo.FieldByName('ARQ_Path').AsString);
             Imagens.Post;
             TF_VisualizadorImagem.Inicia(Imagens.Data);
+          end
+        else if ExtractFileExt(cds_arquivo.FieldByName('ARQ_Path').AsString) = '.'+cs_PROCESS then
+          begin
+            ProcessUnit:= TClientDataSet.Create(Self);
+            try
+              ProcessUnit.LoadFromFile(cds_arquivo.FieldByName('ARQ_Path').AsString);
+              if ProcessUnit.RecordCount > 0 then
+                TF_VisualizadorProcessos.Inicia(ProcessUnit.Data);
+            finally
+              ProcessUnit.Free;
+            end;
           end
         else
           ExecFileArq(cds_arquivo.FieldByName('ARQ_Path').AsString, Self.Handle);

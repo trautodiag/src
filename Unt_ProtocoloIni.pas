@@ -329,7 +329,7 @@ begin
         end
       else if AExtens = cs_PROCESS then
         begin
-          with TStringList.Create do
+          with TClientDataSet.Create(Self) do
             begin
               try
                 AStream.Position:= 0;

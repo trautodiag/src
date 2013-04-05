@@ -455,4 +455,34 @@ object DM: TDM
     Left = 352
     Top = 240
   end
+  object cds_Horario: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    BeforeInsert = cds_HorarioBeforeInsert
+    AfterCancel = cds_HorarioAfterCancel
+    AfterDelete = cds_HorarioAfterDelete
+    OnNewRecord = cds_HorarioNewRecord
+    Left = 448
+    Top = 176
+    object cds_HorarioHOR_Cod: TAutoIncField
+      FieldName = 'HOR_Cod'
+    end
+    object cds_HorarioHOR_AGE_Cod: TIntegerField
+      FieldName = 'HOR_AGE_Cod'
+    end
+    object cds_HorarioHOR_Data: TDateTimeField
+      FieldName = 'HOR_Data'
+    end
+    object cds_HorarioHOR_Hora: TIntegerField
+      FieldName = 'HOR_Hora'
+    end
+    object cds_HorarioHOR_Minuto: TIntegerField
+      FieldName = 'HOR_Minuto'
+    end
+  end
+  object ds_Horario: TDataSource
+    DataSet = cds_Horario
+    Left = 448
+    Top = 240
+  end
 end

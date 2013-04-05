@@ -110,6 +110,13 @@ type
     cds_acoesAgCompAAC_ARQ_Cod: TIntegerField;
     cds_AgendaCompromissoAGC_ArqExec: TBooleanField;
     cds_acoesAgCompAAC_Tipo: TIntegerField;
+    cds_Horario: TClientDataSet;
+    ds_Horario: TDataSource;
+    cds_HorarioHOR_Cod: TAutoIncField;
+    cds_HorarioHOR_AGE_Cod: TIntegerField;
+    cds_HorarioHOR_Data: TDateTimeField;
+    cds_HorarioHOR_Hora: TIntegerField;
+    cds_HorarioHOR_Minuto: TIntegerField;
     procedure DataModuleCreate(Sender: TObject);
     procedure cds_documentosNewRecord(DataSet: TDataSet);
     procedure cds_documentosAfterDelete(DataSet: TDataSet);
@@ -157,6 +164,10 @@ type
     procedure cds_acoesAgCompAfterCancel(DataSet: TDataSet);
     procedure cds_acoesAgCompAfterDelete(DataSet: TDataSet);
     procedure cds_acoesAgCompNewRecord(DataSet: TDataSet);
+    procedure cds_HorarioBeforeInsert(DataSet: TDataSet);
+    procedure cds_HorarioAfterCancel(DataSet: TDataSet);
+    procedure cds_HorarioAfterDelete(DataSet: TDataSet);
+    procedure cds_HorarioNewRecord(DataSet: TDataSet);
   private
     { Private declarations }
     IDDocumento: Integer;
@@ -170,6 +181,7 @@ type
     IDArquivo: Integer;
     IDAgendaCompromisso: Integer;
     IDAcoesAgComp: Integer;
+    IDHorario: Integer;
     procedure CreateClientDataSet;
     procedure SalvaTabelas;
     procedure CarregaTabelas;
@@ -362,6 +374,32 @@ begin
   cds_empresaEMP_Cod.AsInteger:= IDEmpresa;
 end;
 
+procedure TDM.cds_HorarioAfterCancel(DataSet: TDataSet);
+begin
+  Dec(IDHorario);
+end;
+
+procedure TDM.cds_HorarioAfterDelete(DataSet: TDataSet);
+begin
+  Dec(IDHorario);
+end;
+
+procedure TDM.cds_HorarioBeforeInsert(DataSet: TDataSet);
+begin
+  cds_Horario.IndexFieldNames:= 'HOR_Cod';
+  if cds_Horario.RecordCount > 0 then
+    begin
+      cds_Horario.Last;
+      IDHorario:= cds_HorarioHOR_Cod.AsInteger;
+    end;
+end;
+
+procedure TDM.cds_HorarioNewRecord(DataSet: TDataSet);
+begin
+  inc(IDHorario);
+  cds_HorarioHOR_Cod.AsInteger:= IDHorario;
+end;
+
 procedure TDM.cds_itensProtocoloAfterCancel(DataSet: TDataSet);
 begin
   Dec(IDItProtocolo);
@@ -517,6 +555,7 @@ begin
   IDArquivo:= 0;
   IDAgendaCompromisso:= 0;
   IDAcoesAgComp:= 0;
+  IDHorario:= 0;
 
   cds_documentos.IndexFieldNames:= 'DOC_Cod';
   if cds_documentos.RecordCount > 0 then
@@ -594,6 +633,14 @@ begin
       cds_acoesAgComp.Last;
       IDAcoesAgComp:= cds_acoesAgCompAAC_Cod.AsInteger;
     end;
+
+  cds_Horario.IndexFieldNames:= 'HOR_Cod';
+  if cds_Horario.RecordCount > 0 then
+    begin
+      cds_Horario.Last;
+      IDHorario:= cds_HorarioHOR_Cod.AsInteger;
+    end;
+
 end;
 
 procedure TDM.DataModuleDestroy(Sender: TObject);

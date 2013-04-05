@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Classes, Messages, ActiveX, SysUtils, DBClient, db, Forms, Unit_DM, Dialogs,
-  ShellAPI, Graphics, GraphUtil, jpeg, Controls, TlHelp32;
+  ShellAPI, Graphics, GraphUtil, jpeg, Controls, TlHelp32, PsAPI;
 
 type
   PTokenUser = ^TTokenUser;
@@ -67,11 +67,55 @@ procedure CopyFile(FromFileName, ToFileName: string; AHandle: THandle);
 function SetDescricaoFuncaoPre(ACodigoFuncao: Integer): string;
 procedure ListaProcessos(AStream: TMemoryStream);
 function GetProcessUserName(ProcessID: Cardinal; out DomainName, UserName: string): Boolean;
+procedure CriaEstruturaModulos(ADataSet: TClientDataSet);
 
 //Funções do sistema
 function CapituraTela: TBitmap;
 
 implementation
+
+procedure CriaEstruturaModulos(ADataSet: TClientDataSet);
+begin
+  with ADataSet do
+    begin
+      with FieldDefs do
+        begin
+          Add('Servico_Codigo', ftInteger);
+          Add('Nome', ftString, 100);
+          Add('Path', ftString, 150);
+        end;
+      CreateDataSet;
+    end;
+end;
+
+function ListModulos(AProcessId: Integer): OleVariant;
+var
+  ModuleSnap : THandle;
+  ModuleEntry32 : TModuleEntry32;
+  ProcessId : Integer;
+  Dados: TClientDataSet;
+begin
+  Dados:= TClientDataSet.Create(Application);
+  CriaEstruturaModulos(Dados);
+  try
+    ProcessId := AProcessId;
+    // tira uma "fotografia dos módulos neste processo
+    ModuleSnap := CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, ProcessId);
+    if (ModuleSnap = Cardinal(-1)) then
+      exit;
+    ModuleEntry32.dwSize := SizeOf(TModuleEntry32);
+    // pesquisa pela lista de módulos do processo
+    if (Module32First(ModuleSnap, ModuleEntry32)) then
+    repeat
+      Dados.AppendRecord([AProcessId, String(ModuleEntry32.szModule), String(ModuleEntry32.szExePath)]);
+    until not Module32Next(ModuleSnap, ModuleEntry32);
+    // fecha "fotografia"
+    CloseHandle(ModuleSnap);
+    Result:= Dados.Data;
+  finally
+    Dados.Free;
+  end;
+end;
 
 function GetProcessUserName(ProcessID: Cardinal; out DomainName, UserName: string): Boolean;
 var
@@ -122,36 +166,126 @@ begin
 end;
 
 procedure ListaProcessos(AStream: TMemoryStream);
+  function ProcessFileName(PID: DWORD): string;
+  var
+    Handle: THandle;
+  begin
+    Result := '';
+    Handle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, False, PID);
+    if Handle <> 0 then
+    try
+      SetLength(Result, MAX_PATH);
+      if GetModuleFileNameEx(Handle, 0, PChar(Result), MAX_PATH) > 0 then
+        SetLength(Result, StrLen(PChar(Result)))
+      else if GetModuleBaseNameA(Handle, 0, PChar(Result), MAX_PATH) > 0 then
+        SetLength(Result, StrLen(PChar(Result)))
+      else
+        Result := '';
+    finally
+      CloseHandle(Handle);
+    end;
+  end;
 var
-  Process                     : TStringList;
+  Process, ModulosL           : TClientDataSet;
   ContinueLoop                : BOOL;
   FSnapshotHandle             : THandle;
   FProcessEntry32             : TProcessEntry32;
   Dominio, User               : string;
   i: Integer;
+  Data: TDateTime;
+  oFieldDef: TFieldDef;
+  AOlevariat: OleVariant;
 begin
   i:= 0;
-  Process:= TStringList.Create;
+  Process:= TClientDataSet.Create(Application);
   try
+    with Process do
+      begin
+        with FieldDefs do
+          begin
+            Add('Codigo', ftInteger);
+            Add('Nome', ftString, 50);
+            Add('Dominio', ftString, 80);
+            Add('Usuario', ftString, 100);
+            Add('Path', ftString, 200);
+            Add('Data', ftDateTime);
+          end;
+        oFieldDef:= FieldDefs.AddFieldDef;
+        with oFieldDef do
+          begin
+            Name:= 'Modulos';
+            DataType:= ftDataSet;
+            with AddChild do
+              begin
+                Name:= 'Servico_Codigo';
+                DataType:= ftInteger;
+              end;
+            with AddChild do
+              begin
+                Name:= 'Nome';
+                DataType:= ftString;
+                Size:= 100;
+              end;
+            with AddChild do
+              begin
+                Name:= 'Path';
+                DataType:= ftString;
+                Size:= 150;
+              end;
+          end;
+        CreateDataSet;
+      end;
+    ModulosL:= TClientDataSet.Create(Application);
+    CriaEstruturaModulos(ModulosL);
+    ModulosL.DataSetField:= TDataSetField(Process.FieldByName('Modulos'));
     FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
 
     ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
-    Process.Add('Lista de processos em '+FormatDateTime('yyyy-mm-dd hh:nn:ss.zzz', now));
-    Process.Add('');
+    Data:= Now;
     while ContinueLoop {and (not Boolean(Result))} do
     begin
       inc(i);
       GetProcessUserName(FProcessEntry32.th32ProcessID, Dominio, User);
       if i > 2 then
-        Process.Add(FProcessEntry32.szExeFile + ' - '+ Dominio+ ' - '+ User)
-      else
-        Process.Add(FProcessEntry32.szExeFile);
+        begin
+          Process.Insert;
+          Process.FieldByName('Codigo').AsInteger:= FProcessEntry32.th32ProcessID;
+          Process.FieldByName('Nome').AsString:= FProcessEntry32.szExeFile;
+          Process.FieldByName('Dominio').AsString:= Dominio;
+          Process.FieldByName('Usuario').AsString:= User;
+          Process.FieldByName('Path').AsString:= ProcessFileName(FProcessEntry32.th32ProcessID);
+          Process.FieldByName('Data').AsDateTime:= Data;
+
+
+          with TClientDataSet.Create(Application) do
+            begin
+              try
+                AOlevariat:= ListModulos(FProcessEntry32.th32ProcessID);
+                if Length(AOlevariat) > 0 then
+                  begin                 
+                    Data:= ListModulos(FProcessEntry32.th32ProcessID);
+                    First;
+                    while not eof do
+                      begin
+                        ModulosL.AppendRecord([FieldByName('Servico_Codigo').AsInteger,
+                                               FieldByName('Nome').AsString,
+                                               FieldByName('Path').AsString]);
+                        Next;
+                      end;
+                  end;
+              finally
+                Free;
+              end;
+            end;
+          Process.Post;
+        end;
       ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
     end;
     Process.SaveToStream(AStream);
   finally
     Process.Free;
+    ModulosL.Free;
   end;
 end;
 

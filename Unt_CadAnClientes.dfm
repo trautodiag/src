@@ -1,5 +1,7 @@
 inherited F_CadAnClientes: TF_CadAnClientes
   Caption = 'Clientes'
+  ExplicitWidth = 796
+  ExplicitHeight = 525
   PixelsPerInch = 96
   TextHeight = 13
   inherited pgctrl_base: TcxPageControl
@@ -10,16 +12,22 @@ inherited F_CadAnClientes: TF_CadAnClientes
             object vwl_baseColumn1: TcxGridDBColumn
               Caption = 'C'#243'dogo'
               DataBinding.FieldName = 'CLI_Cod'
+              Options.Editing = False
+              Options.Focusing = False
               Width = 100
             end
             object vwl_baseColumn2: TcxGridDBColumn
               Caption = 'Nome'
               DataBinding.FieldName = 'CLI_Nome'
+              Options.Editing = False
+              Options.Focusing = False
               Width = 492
             end
             object vwl_baseColumn3: TcxGridDBColumn
               Caption = 'Data de registro'
               DataBinding.FieldName = 'Data'
+              Options.Editing = False
+              Options.Focusing = False
               Width = 150
             end
           end
@@ -29,7 +37,7 @@ inherited F_CadAnClientes: TF_CadAnClientes
   end
   inherited il_base: TImageList
     Bitmap = {
-      494C010104001800640080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010104001800680080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000000200000001000001002000000000000000
       0800000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
