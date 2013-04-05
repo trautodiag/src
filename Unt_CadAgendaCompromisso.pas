@@ -172,8 +172,8 @@ begin
 end;
 
 procedure TF_CadAgendaCompromisso.act_VincularArqExecute(Sender: TObject);
-var
-  filtro: string;
+//var
+//  filtro: string;
 begin
   inherited;
   with TClientDataSet.Create(nil) do
@@ -183,16 +183,16 @@ begin
         //DM.cds_AgendaCompromisso.FieldByName('AGC_ARQ_Cod').AsInteger:= FieldByName('Codigo').AsInteger;
         if FieldByName('Codigo').AsInteger <> 0 then
           begin
-            filtro:= cds_ArqAcao.Filter;
-            cds_ArqAcao.Filtered:= False;
+//            filtro:= cds_ArqAcao.Filter;
+//            cds_ArqAcao.Filtered:= False;
             cds_ArqAcao.Insert;
             //cds_ArqAcao.FieldByName('AAC_Cod').AsInteger:= cds_ArqAcao.RecordCount; //Para nao erro
             cds_ArqAcao.FieldByName('AAC_AGC_Cod').AsInteger:= StrToInt(dbedt_AGC_Cod.Text);
             cds_ArqAcao.FieldByName('AAC_ARQ_Cod').AsInteger:= FieldByName('Codigo').AsInteger;
             cds_ArqAcao.FieldByName('AAC_Tipo').AsInteger:= cs_AAC_Tipo_ExecArq;
             cds_ArqAcao.Post;
-            cds_ArqAcao.Filter:= filtro;
-            cds_ArqAcao.Filtered:= True;
+//            cds_ArqAcao.Filter:= filtro;
+//            cds_ArqAcao.Filtered:= True;
           end;
       finally
         Free;
@@ -238,10 +238,13 @@ begin
     end;
 
   cds_Arquivo.Data:= DM.cds_arquivo.Data;
-  cds_ArqAcao.Data:= DM.cds_acoesAgComp.Data;
-  cds_ArqAcao.Filtered:= False;
-  cds_ArqAcao.Filter:= 'AAC_AGC_Cod = '+Trim(dbedt_AGC_Cod.Text);
-  cds_ArqAcao.Filtered:= True;
+//  cds_ArqAcao.Data:= DM.cds_acoesAgComp.Data;
+  DM.cds_acoesAgComp.Filtered:= False;
+  DM.cds_acoesAgComp.Filter:= 'AAC_AGC_Cod = '+Trim(dbedt_AGC_Cod.Text);
+  DM.cds_acoesAgComp.Filtered:= True;
+
+  cds_ArqAcao.CloneCursor(DM.cds_acoesAgComp, False);
+  DM.cds_arquivo.Filtered:= False;
 
   if cds_ArqAcao.IsEmpty then
     Self.Height:= Self.Height - pnl_ArquivosVinculados.Height
