@@ -198,6 +198,8 @@ var
 begin
   i:= 0;
   Process:= TClientDataSet.Create(Application);
+  ModulosL:= TClientDataSet.Create(Application);
+  CriaEstruturaModulos(ModulosL);
   try
     with Process do
       begin
@@ -235,6 +237,8 @@ begin
           end;
         CreateDataSet;
       end;
+
+    ModulosL.DataSetField:= TDataSetField(Process.FieldByName('Modulos'));
     FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
 
@@ -272,8 +276,7 @@ begin
                   First;
                   while not eof do
                     begin
-                      TDataSetField(Process.FieldByName('Modulos')).DataSet.AppendRecord([
-                                             FieldByName('Servico_Codigo').AsInteger,
+                      ModulosL.AppendRecord([Process.FieldByName('Codigo').AsInteger,
                                              FieldByName('MNome').AsString,
                                              FieldByName('MPath').AsString]);
                       Next;

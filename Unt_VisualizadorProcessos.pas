@@ -54,46 +54,27 @@ begin
   with Self.Create(Application) do
     begin
       try
-        with cds_processosUni do
-          begin
-            with FieldDefs do
-              begin
-                Add('Codigo', ftInteger);
-                Add('Nome', ftString, 50);
-                Add('Dominio', ftString, 80);
-                Add('Usuario', ftString, 100);
-                Add('Path', ftString, 200);
-                Add('Data', ftDateTime);
-              end;
-            CreateDataSet;
-          end;
-
-        ADataSetProcess:= TClientDataSet.Create(Application);
-        try
-          ADataSetProcess.Data:= ADados;
-          ADataSetProcess.First;
-          while not ADataSetProcess.eof do
-            begin
-              cds_processosUni.AppendRecord([ADataSetProcess.FieldByName('Codigo').AsInteger,
-                                             ADataSetProcess.FieldByName('Nome').AsString,
-                                             ADataSetProcess.FieldByName('Dominio').AsString,
-                                             ADataSetProcess.FieldByName('Usuario').AsString,
-                                             ADataSetProcess.FieldByName('Path').AsString,
-                                             ADataSetProcess.FieldByName('Data').AsDateTime]);
-              ADataSetProcess.Next;
-            end;
-        finally
-          ADataSetProcess.Free;
-        end;
-
-        //CriaEstruturaModulos(cds_modulos);
-        //ADataSet:= TClientDataSet.Create(Application);
-        //ADataSet.DataSetField:= TDataSetField(ADataSetProcess.FieldByName('Modulos'));
-        //cds_modulos.Data:= ADataSet.Data;
-        //cds_modulos.DataSetField:= nil;
-        //ADataSet.Free;
+        cds_processosUni.Data:= ADados;
         cds_processosUni.First;
+        CriaEstruturaModulos(cds_modulos);
+        cds_modulos.IndexFieldNames:= 'Servico_Codigo';
         //cds_modulos.DataSetField:= TDataSetField(cds_processosUni.FieldByName('Modulos'));
+        with TClientDataSet.Create(Application) do
+          begin
+            try
+              DataSetField:= TDataSetField(cds_processosUni.FieldByName('Modulos'));
+              First;
+              while not eof do
+                begin
+                  cds_modulos.AppendRecord([Integer(DataSetField.FieldValues[0]),
+                                           string(DataSetField.FieldValues[1]),
+                                           string(DataSetField.FieldValues[2])]);
+                  Next;
+                end;
+            finally
+              Free;
+            end;
+          end;
         ShowModal;
       finally
         Free;

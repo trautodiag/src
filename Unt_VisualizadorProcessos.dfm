@@ -41,7 +41,6 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
         Align = alClient
         TabOrder = 0
         LookAndFeel.SkinName = 'Office2007Blue'
-        ExplicitHeight = 345
         object cxGridDBTableView1: TcxGridDBTableView
           Navigator.Buttons.CustomButtons = <>
           Navigator.Buttons.First.Visible = False
@@ -64,6 +63,7 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
           Navigator.InfoPanel.DisplayMask = '[RecordIndex] de [RecordCount]'
           Navigator.Visible = True
           DataController.DataSource = ds_processosUni
+          DataController.KeyFieldNames = 'Codigo'
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <>
           DataController.Summary.SummaryGroups = <
@@ -117,6 +117,9 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
         object cxGrid1DBTableView1: TcxGridDBTableView
           Navigator.Buttons.CustomButtons = <>
           DataController.DataSource = ds_modulos
+          DataController.DetailKeyFieldNames = 'Servico_Codigo'
+          DataController.KeyFieldNames = 'Servico_Codigo'
+          DataController.MasterKeyFieldNames = 'Codigo'
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <>
           DataController.Summary.SummaryGroups = <>
