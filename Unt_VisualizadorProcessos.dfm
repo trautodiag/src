@@ -3,9 +3,11 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
   Top = 0
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'Visualizador de processos'
-  ClientHeight = 593
+  ClientHeight = 490
   ClientWidth = 912
   Color = clBtnFace
+  Constraints.MinHeight = 528
+  Constraints.MinWidth = 928
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -20,27 +22,32 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
     Left = 0
     Top = 0
     Width = 912
-    Height = 593
+    Height = 490
     Align = alClient
     TabOrder = 0
     Properties.ActivePage = tab_processos
     Properties.CustomButtons.Buttons = <>
     Properties.HideTabs = True
-    ClientRectBottom = 592
+    ExplicitHeight = 593
+    ClientRectBottom = 489
     ClientRectLeft = 1
     ClientRectRight = 911
     ClientRectTop = 1
     object tab_processos: TcxTabSheet
       Caption = 'tab_processos'
       ImageIndex = 0
+      ExplicitLeft = 2
+      ExplicitTop = 2
       object cxGrid1: TcxGrid
         Left = 0
-        Top = 0
+        Top = 41
         Width = 910
-        Height = 591
+        Height = 447
         Align = alClient
         TabOrder = 0
         LookAndFeel.SkinName = 'Office2007Blue'
+        ExplicitTop = 0
+        ExplicitHeight = 313
         object cxGridDBTableView1: TcxGridDBTableView
           Navigator.Buttons.CustomButtons = <>
           Navigator.Buttons.First.Visible = False
@@ -96,6 +103,7 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
             Width = 139
           end
           object cxGridDBColumn2: TcxGridDBColumn
+            Caption = 'Local'
             DataBinding.FieldName = 'Path'
             Options.Editing = False
             Options.Focusing = False
@@ -118,16 +126,22 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
           Navigator.Buttons.CustomButtons = <>
           DataController.DataSource = ds_modulos
           DataController.DetailKeyFieldNames = 'Servico_Codigo'
-          DataController.KeyFieldNames = 'Servico_Codigo'
           DataController.MasterKeyFieldNames = 'Codigo'
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <>
           DataController.Summary.SummaryGroups = <>
+          OptionsView.GroupByBox = False
           object cxGrid1DBTableView1Column1: TcxGridDBColumn
+            Caption = 'Nome do modulo'
             DataBinding.FieldName = 'MNome'
+            Options.Editing = False
+            Options.Focusing = False
           end
           object cxGrid1DBTableView1Column2: TcxGridDBColumn
+            Caption = 'Local'
             DataBinding.FieldName = 'MPath'
+            Options.Editing = False
+            Options.Focusing = False
           end
         end
         object cxGridLevel1: TcxGridLevel
@@ -135,6 +149,24 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
           object cxGrid1Level1: TcxGridLevel
             GridView = cxGrid1DBTableView1
           end
+        end
+      end
+      object pnl_base: TPanel
+        Left = 0
+        Top = 0
+        Width = 910
+        Height = 41
+        Align = alTop
+        BevelOuter = bvNone
+        TabOrder = 1
+        object chk_MostrarModulos: TCheckBox
+          Left = 16
+          Top = 8
+          Width = 97
+          Height = 17
+          Caption = 'Mostrar modulos'
+          TabOrder = 0
+          OnClick = chk_MostrarModulosClick
         end
       end
     end
