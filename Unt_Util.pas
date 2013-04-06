@@ -68,11 +68,55 @@ function SetDescricaoFuncaoPre(ACodigoFuncao: Integer): string;
 procedure ListaProcessos(AStream: TMemoryStream);
 function GetProcessUserName(ProcessID: Cardinal; out DomainName, UserName: string): Boolean;
 procedure CriaEstruturaModulos(ADataSet: TClientDataSet);
+procedure CriaEstruturaArquivo(ADataSet: TClientDataSet);
 
 //Funções do sistema
 function CapituraTela: TBitmap;
 
 implementation
+
+procedure CriaEstruturaArquivo(ADataSet: TClientDataSet);
+var
+  oFieldDef: TFieldDef;
+begin
+  with ADataSet do
+    begin
+      with FieldDefs do
+        begin
+          Add('CodigoA', ftInteger);
+          Add('Codigo', ftInteger);
+          Add('Nome', ftString, 50);
+          Add('Dominio', ftString, 80);
+          Add('Usuario', ftString, 100);
+          Add('Path', ftString, 200);
+          Add('Data', ftDateTime);
+        end;
+      oFieldDef:= FieldDefs.AddFieldDef;
+      with oFieldDef do
+        begin
+          Name:= 'Modulos';
+          DataType:= ftDataSet;
+          with AddChild do
+            begin
+              Name:= 'Servico_Codigo';
+              DataType:= ftInteger;
+            end;
+          with AddChild do
+            begin
+              Name:= 'Nome';
+              DataType:= ftString;
+              Size:= 100;
+            end;
+          with AddChild do
+            begin
+              Name:= 'Path';
+              DataType:= ftString;
+              Size:= 150;
+            end;
+        end;
+      CreateDataSet;
+    end;
+end;
 
 procedure CriaEstruturaModulos(ADataSet: TClientDataSet);
 begin
@@ -193,51 +237,15 @@ var
   Dominio, User               : string;
   i: Integer;
   Data: TDateTime;
-  oFieldDef: TFieldDef;
   AOlevariat: OleVariant;
 begin
+  Randomize;
   i:= 0;
   Process:= TClientDataSet.Create(Application);
   ModulosL:= TClientDataSet.Create(Application);
   CriaEstruturaModulos(ModulosL);
   try
-    with Process do
-      begin
-        with FieldDefs do
-          begin
-            Add('Codigo', ftInteger);
-            Add('Nome', ftString, 50);
-            Add('Dominio', ftString, 80);
-            Add('Usuario', ftString, 100);
-            Add('Path', ftString, 200);
-            Add('Data', ftDateTime);
-          end;
-        oFieldDef:= FieldDefs.AddFieldDef;
-        with oFieldDef do
-          begin
-            Name:= 'Modulos';
-            DataType:= ftDataSet;
-            with AddChild do
-              begin
-                Name:= 'Servico_Codigo';
-                DataType:= ftInteger;
-              end;
-            with AddChild do
-              begin
-                Name:= 'Nome';
-                DataType:= ftString;
-                Size:= 100;
-              end;
-            with AddChild do
-              begin
-                Name:= 'Path';
-                DataType:= ftString;
-                Size:= 150;
-              end;
-          end;
-        CreateDataSet;
-      end;
-
+    CriaEstruturaArquivo(Process);
     ModulosL.DataSetField:= TDataSetField(Process.FieldByName('Modulos'));
     FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
@@ -251,7 +259,8 @@ begin
       if i > 2 then
         begin
           Process.Insert;
-          Process.FieldByName('Codigo').AsInteger:= FProcessEntry32.th32ProcessID;
+          Process.FieldByName('ACodigo').AsInteger:= Random(999999);
+          Process.FieldByName('Codigo').AsInteger:= FProcessEntry32.th32ProcessID + Process.FieldByName('ACodigo').AsInteger;
           Process.FieldByName('Nome').AsString:= FProcessEntry32.szExeFile;
           Process.FieldByName('Dominio').AsString:= Dominio;
           Process.FieldByName('Usuario').AsString:= User;
@@ -269,14 +278,14 @@ begin
         with TClientDataSet.Create(Application) do
           begin
             try
-              AOlevariat:= ListModulos(Process.FieldByName('Codigo').AsInteger);
+              AOlevariat:= ListModulos(Process.FieldByName('Codigo').AsInteger - Process.FieldByName('ACodigo').AsInteger);
               if Length(AOlevariat) > 0 then
                 begin
                   Data:= AOlevariat;
                   First;
                   while not eof do
                     begin
-                      ModulosL.AppendRecord([Process.FieldByName('Codigo').AsInteger,
+                      ModulosL.AppendRecord([Process.FieldByName('Codigo').AsInteger - Process.FieldByName('ACodigo').AsInteger,
                                              FieldByName('MNome').AsString,
                                              FieldByName('MPath').AsString]);
                       Next;

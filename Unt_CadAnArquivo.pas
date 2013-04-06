@@ -202,7 +202,7 @@ end;
 procedure TF_CadAnArquivo.act_ExecutarSelecaoArquivoExecute(Sender: TObject);
 var
   book: string;
-  Imagens, ProcessUnit, ProcessoList: TClientDataSet;
+  Imagens, ProcessUnit, ProcessoList, Modulos, ModulosAux: TClientDataSet;
 begin
   inherited;
   if ValidaSelecao(cds_arquivo.data, cds_arquivo.FieldByName('ARQ_Sel')) then
@@ -213,18 +213,7 @@ begin
           Imagens.FieldDefs.Add('Imagem', ftGraphic);
           Imagens.CreateDataSet;
           ProcessoList:= TClientDataSet.Create(Self);
-          with ProcessoList do
-            begin
-              with FieldDefs do
-                begin
-                  Add('Nome', ftString, 50);
-                  Add('Dominio', ftString, 80);
-                  Add('Usuario', ftString, 100);
-                  Add('Path', ftString, 200);
-                  Add('Data', ftDateTime);
-                end;
-              CreateDataSet;
-            end;
+          CriaEstruturaArquivo(ProcessoList);
           book:= cds_arquivo.Bookmark;
           cds_arquivo.DisableControls;
           try
@@ -249,11 +238,39 @@ begin
                               ProcessUnit.First;
                               while not ProcessUnit.Eof do
                                 begin
-                                  ProcessoList.AppendRecord([ProcessUnit.FieldByName('Nome').AsString,
-                                                             ProcessUnit.FieldByName('Dominio').AsString,
-                                                             ProcessUnit.FieldByName('Usuario').AsString,
-                                                             ProcessUnit.FieldByName('Path').AsString,
-                                                             ProcessUnit.FieldByName('Data').AsDateTime]);
+                                  Modulos:= TClientDataSet.Create(Self);
+                                  try
+                                    CriaEstruturaModulos(Modulos);
+                                    ModulosAux:= TClientDataSet.Create(Application);
+                                    with ModulosAux do
+                                      begin
+                                        try
+                                          DataSetField:= TDataSetField(ProcessUnit.FieldByName('Modulos'));
+                                          First;
+                                          Next;
+                                          while not eof do
+                                            begin
+                                              Modulos.AppendRecord([Integer(DataSetField.FieldValues[0]),
+                                                                       string(DataSetField.FieldValues[1]),
+                                                                       string(DataSetField.FieldValues[2])]);
+                                              Next;
+                                            end;
+
+                                          ProcessoList.AppendRecord([ProcessUnit.FieldByName('ACodigo').AsInteger,
+                                                                     ProcessUnit.FieldByName('Codigo').AsInteger,
+                                                                     ProcessUnit.FieldByName('Nome').AsString,
+                                                                     ProcessUnit.FieldByName('Dominio').AsString,
+                                                                     ProcessUnit.FieldByName('Usuario').AsString,
+                                                                     ProcessUnit.FieldByName('Path').AsString,
+                                                                     ProcessUnit.FieldByName('Data').AsDateTime,
+                                                                     ModulosAux.DataSetField]);
+                                        finally
+                                          Free;
+                                        end;
+                                      end;
+                                  finally
+                                    Modulos.Free;
+                                  end;
                                   ProcessUnit.Next;
                                 end;
                             end;

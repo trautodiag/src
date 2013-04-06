@@ -1,6 +1,8 @@
 inherited F_CadAnArquivo: TF_CadAnArquivo
   Caption = 'Arquivo'
   Constraints.MinWidth = 680
+  ExplicitWidth = 796
+  ExplicitHeight = 525
   PixelsPerInch = 96
   TextHeight = 13
   inherited pgctrl_base: TcxPageControl
@@ -28,13 +30,13 @@ inherited F_CadAnArquivo: TF_CadAnArquivo
         object btn_ExcluirArquivo: TcxButton
           Left = 8
           Top = 8
-          Width = 137
+          Width = 145
           Height = 25
           Action = act_ExcluirArquivo
           TabOrder = 4
         end
         object btn_ExecutarSelecaoArquivo: TcxButton
-          Left = 148
+          Left = 156
           Top = 8
           Width = 157
           Height = 25
@@ -42,7 +44,7 @@ inherited F_CadAnArquivo: TF_CadAnArquivo
           TabOrder = 5
         end
         object btn_UploadArquivo: TcxButton
-          Left = 308
+          Left = 316
           Top = 8
           Width = 109
           Height = 25
@@ -50,7 +52,7 @@ inherited F_CadAnArquivo: TF_CadAnArquivo
           TabOrder = 6
         end
         object btn_DownloadArquivo: TcxButton
-          Left = 420
+          Left = 428
           Top = 8
           Width = 117
           Height = 25
@@ -58,7 +60,7 @@ inherited F_CadAnArquivo: TF_CadAnArquivo
           TabOrder = 7
         end
         object btn_PropriedadeArquivo: TcxButton
-          Left = 540
+          Left = 548
           Top = 8
           Width = 125
           Height = 25
@@ -234,7 +236,7 @@ inherited F_CadAnArquivo: TF_CadAnArquivo
   end
   inherited il_base: TImageList
     Bitmap = {
-      494C010105001800880080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101050018008C0080008000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000000200000001000001002000000000000000
       0800000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
