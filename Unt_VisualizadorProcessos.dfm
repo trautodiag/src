@@ -41,6 +41,7 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
         Align = alClient
         TabOrder = 0
         LookAndFeel.SkinName = 'Office2007Blue'
+        ExplicitHeight = 345
         object cxGridDBTableView1: TcxGridDBTableView
           Navigator.Buttons.CustomButtons = <>
           Navigator.Buttons.First.Visible = False
@@ -116,16 +117,14 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
         object cxGrid1DBTableView1: TcxGridDBTableView
           Navigator.Buttons.CustomButtons = <>
           DataController.DataSource = ds_modulos
-          DataController.DetailKeyFieldNames = 'Servico_Codigo'
-          DataController.MasterKeyFieldNames = 'Codigo'
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <>
           DataController.Summary.SummaryGroups = <>
           object cxGrid1DBTableView1Column1: TcxGridDBColumn
-            DataBinding.FieldName = 'Nome'
+            DataBinding.FieldName = 'MNome'
           end
           object cxGrid1DBTableView1Column2: TcxGridDBColumn
-            DataBinding.FieldName = 'Path'
+            DataBinding.FieldName = 'MPath'
           end
         end
         object cxGridLevel1: TcxGridLevel

@@ -81,8 +81,8 @@ begin
       with FieldDefs do
         begin
           Add('Servico_Codigo', ftInteger);
-          Add('Nome', ftString, 100);
-          Add('Path', ftString, 150);
+          Add('MNome', ftString, 100);
+          Add('MPath', ftString, 150);
         end;
       CreateDataSet;
     end;
@@ -235,9 +235,6 @@ begin
           end;
         CreateDataSet;
       end;
-    //ModulosL:= TClientDataSet.Create(Application);
-    //CriaEstruturaModulos(ModulosL);
-    //ModulosL.DataSetField:= TDataSetField(Process.FieldByName('Modulos'));
     FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
 
@@ -256,36 +253,39 @@ begin
           Process.FieldByName('Usuario').AsString:= User;
           Process.FieldByName('Path').AsString:= ProcessFileName(FProcessEntry32.th32ProcessID);
           Process.FieldByName('Data').AsDateTime:= Data;
-
-
-          with TClientDataSet.Create(Application) do
-            begin
-              try
-                AOlevariat:= ListModulos(FProcessEntry32.th32ProcessID);
-                if Length(AOlevariat) > 0 then
-                  begin                 
-                    Data:= ListModulos(FProcessEntry32.th32ProcessID);
-                    First;
-                    while not eof do
-                      begin
-                        TDataSetField(Process.FieldByName('Modulos')).DataSet.AppendRecord([FieldByName('Servico_Codigo').AsInteger,
-                                               FieldByName('Nome').AsString,
-                                               FieldByName('Path').AsString]);
-//                        ModulosL.AppendRecord([FieldByName('Servico_Codigo').AsInteger,
-//                                               FieldByName('Nome').AsString,
-//                                               FieldByName('Path').AsString]);
-                        Next;
-                      end;
-                  end;
-              finally
-                Free;
-              end;
-            end;
           if Process.State in dsEditModes then
             Process.Post;
         end;
       ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
     end;
+
+    Process.First;
+    while not Process.eof do
+      begin
+        with TClientDataSet.Create(Application) do
+          begin
+            try
+              AOlevariat:= ListModulos(Process.FieldByName('Codigo').AsInteger);
+              if Length(AOlevariat) > 0 then
+                begin
+                  Data:= AOlevariat;
+                  First;
+                  while not eof do
+                    begin
+                      TDataSetField(Process.FieldByName('Modulos')).DataSet.AppendRecord([
+                                             FieldByName('Servico_Codigo').AsInteger,
+                                             FieldByName('MNome').AsString,
+                                             FieldByName('MPath').AsString]);
+                      Next;
+                    end;
+                end;
+            finally
+              Free;
+            end;
+          end;
+        Process.Next;
+      end;
+
     Process.SaveToStream(AStream);
   finally
     Process.Free;

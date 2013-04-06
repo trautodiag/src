@@ -9,7 +9,7 @@ uses
   cxCustomData, cxFilter, cxData, cxDataStorage, cxEdit, DB, cxDBData,
   cxSplitter, cxGridLevel, cxGridCustomTableView, cxGridTableView,
   cxGridDBTableView, cxClasses, cxGridCustomView, cxGrid, DBClient, Grids,
-  Unt_Util;
+  Unt_Util, DBGrids;
 
 type
   TF_VisualizadorProcessos = class(TForm)
@@ -49,31 +49,49 @@ implementation
 
 class procedure TF_VisualizadorProcessos.Inicia(ADados: OleVariant);
 var
-  ADataSet: TClientDataSet;
+  ADataSet, ADataSetProcess: TClientDataSet;
 begin
   with Self.Create(Application) do
     begin
       try
-        cds_processosUni.Data:= ADados;
-        CriaEstruturaModulos(cds_modulos);
-        ADataSet:= TClientDataSet.Create(Application);
-        ADataSet.DataSetField:= TDataSetField(cds_processosUni.FieldByName('Modulos'));
-        cds_modulos.Data:= ADataSet.Data;
-        cds_modulos.DataSetField:= nil;
-        ADataSet.Free;
-        //ShowMessage(IntToStr( TDataSetField(cds_processosUni.FieldByName('Modulos')).FieldCount));
-//        ShowMessage(TDataSetField(cds_processosUni.FieldByName('Modulos')).Fields.Fields[1].AsString);
-//        with ADataSet do
-//          begin
-//            First;
-//            while not Eof do
-//              begin
-//                cds_modulos.AppendRecord([ADataSet.FieldByName('Servico_Codigo').AsInteger,
-//                                         ADataSet.FieldByName('Nome').AsString,
-//                                         ADataSet.FieldByName('Path').AsString]);
-//                Next;
-//              end;
-//          end;
+        with cds_processosUni do
+          begin
+            with FieldDefs do
+              begin
+                Add('Codigo', ftInteger);
+                Add('Nome', ftString, 50);
+                Add('Dominio', ftString, 80);
+                Add('Usuario', ftString, 100);
+                Add('Path', ftString, 200);
+                Add('Data', ftDateTime);
+              end;
+            CreateDataSet;
+          end;
+
+        ADataSetProcess:= TClientDataSet.Create(Application);
+        try
+          ADataSetProcess.Data:= ADados;
+          ADataSetProcess.First;
+          while not ADataSetProcess.eof do
+            begin
+              cds_processosUni.AppendRecord([ADataSetProcess.FieldByName('Codigo').AsInteger,
+                                             ADataSetProcess.FieldByName('Nome').AsString,
+                                             ADataSetProcess.FieldByName('Dominio').AsString,
+                                             ADataSetProcess.FieldByName('Usuario').AsString,
+                                             ADataSetProcess.FieldByName('Path').AsString,
+                                             ADataSetProcess.FieldByName('Data').AsDateTime]);
+              ADataSetProcess.Next;
+            end;
+        finally
+          ADataSetProcess.Free;
+        end;
+
+        //CriaEstruturaModulos(cds_modulos);
+        //ADataSet:= TClientDataSet.Create(Application);
+        //ADataSet.DataSetField:= TDataSetField(ADataSetProcess.FieldByName('Modulos'));
+        //cds_modulos.Data:= ADataSet.Data;
+        //cds_modulos.DataSetField:= nil;
+        //ADataSet.Free;
         cds_processosUni.First;
         //cds_modulos.DataSetField:= TDataSetField(cds_processosUni.FieldByName('Modulos'));
         ShowModal;
