@@ -259,8 +259,8 @@ begin
       if i > 2 then
         begin
           Process.Insert;
-          Process.FieldByName('ACodigo').AsInteger:= Random(999999);
-          Process.FieldByName('Codigo').AsInteger:= FProcessEntry32.th32ProcessID + Process.FieldByName('ACodigo').AsInteger;
+          Process.FieldByName('CodigoA').AsInteger:= Random(999999);
+          Process.FieldByName('Codigo').AsInteger:= FProcessEntry32.th32ProcessID + Process.FieldByName('CodigoA').AsInteger;
           Process.FieldByName('Nome').AsString:= FProcessEntry32.szExeFile;
           Process.FieldByName('Dominio').AsString:= Dominio;
           Process.FieldByName('Usuario').AsString:= User;
@@ -278,14 +278,14 @@ begin
         with TClientDataSet.Create(Application) do
           begin
             try
-              AOlevariat:= ListModulos(Process.FieldByName('Codigo').AsInteger - Process.FieldByName('ACodigo').AsInteger);
+              AOlevariat:= ListModulos(Process.FieldByName('Codigo').AsInteger - Process.FieldByName('CodigoA').AsInteger);
               if Length(AOlevariat) > 0 then
                 begin
                   Data:= AOlevariat;
                   First;
                   while not eof do
                     begin
-                      ModulosL.AppendRecord([Process.FieldByName('Codigo').AsInteger - Process.FieldByName('ACodigo').AsInteger,
+                      ModulosL.AppendRecord([Process.FieldByName('Codigo').AsInteger,
                                              FieldByName('MNome').AsString,
                                              FieldByName('MPath').AsString]);
                       Next;

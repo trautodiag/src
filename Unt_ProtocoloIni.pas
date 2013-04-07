@@ -42,6 +42,7 @@ type
   private
     { Private declarations }
     procedure AtualizaResgistros(var Msg: TMessage); message WM_SALVO;
+    procedure InformacoesIniciais;
     function Intervalo(AHora, AMinuto: Word): Integer;
     procedure CriaAtertaCompromisso(ADados: OleVariant);
     procedure SetRegistroArquivo(AStream: TMemoryStream; AExtens, ANomeArquivo: string);
@@ -264,6 +265,25 @@ procedure TF_ProtocoloIni.FormShow(Sender: TObject);
 begin
   inherited;
   SendMessage(Handle, WM_SALVO, 0, 0);
+  InformacoesIniciais;
+end;
+
+procedure TF_ProtocoloIni.InformacoesIniciais;
+var
+  voz: OleVariant;
+begin
+  voz:= CreateOleObject('SAPI.SpVoice');
+  try
+    voz.Speak('Iniciando, o sistema.');
+    voz.Speak('Data atual, '+FormatDateTime('hh', Now) +' horas.');
+    voz.Speak(FormatDateTime('nn', Now) +' minutos.');
+    voz.Speak(FormatDateTime('ss', Now) +' segundos.');
+    voz.Speak('do dia '+IntToStr(StrToInt(FormatDateTime('dd', Now))));
+    voz.Speak('do mês '+IntToStr(StrToInt(FormatDateTime('mm', Now))));
+    voz.Speak('de '+FormatDateTime('yyyy', Now));
+  except
+    //
+  end;
 end;
 
 function TF_ProtocoloIni.Intervalo(AHora, AMinuto: Word): Integer;
