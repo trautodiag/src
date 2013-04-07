@@ -39,6 +39,7 @@ type
     procedure tm_CompromissosTimer(Sender: TObject);
     procedure alerta_baseButtonClick(Sender: TObject;
       AAlertWindow: TdxAlertWindow; AButtonIndex: Integer);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
     procedure AtualizaResgistros(var Msg: TMessage); message WM_SALVO;
@@ -261,11 +262,16 @@ begin
     end;
 end;
 
+procedure TF_ProtocoloIni.FormCreate(Sender: TObject);
+begin
+  inherited;
+  InformacoesIniciais;
+end;
+
 procedure TF_ProtocoloIni.FormShow(Sender: TObject);
 begin
   inherited;
   SendMessage(Handle, WM_SALVO, 0, 0);
-  InformacoesIniciais;
 end;
 
 procedure TF_ProtocoloIni.InformacoesIniciais;
