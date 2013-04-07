@@ -255,8 +255,7 @@ begin
                                                                        string(DataSetField.FieldValues[2])]);
                                               Next;
                                             end;
-
-                                          ProcessoList.AppendRecord([ProcessUnit.FieldByName('ACodigo').AsInteger,
+                                          ProcessoList.AppendRecord([ProcessUnit.FieldByName('CodigoA').AsInteger,
                                                                      ProcessUnit.FieldByName('Codigo').AsInteger,
                                                                      ProcessUnit.FieldByName('Nome').AsString,
                                                                      ProcessUnit.FieldByName('Dominio').AsString,

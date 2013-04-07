@@ -28,7 +28,6 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
     Properties.ActivePage = tab_processos
     Properties.CustomButtons.Buttons = <>
     Properties.HideTabs = True
-    ExplicitHeight = 593
     ClientRectBottom = 489
     ClientRectLeft = 1
     ClientRectRight = 911
@@ -36,8 +35,6 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
     object tab_processos: TcxTabSheet
       Caption = 'tab_processos'
       ImageIndex = 0
-      ExplicitLeft = 2
-      ExplicitTop = 2
       object cxGrid1: TcxGrid
         Left = 0
         Top = 41
@@ -46,8 +43,6 @@ object F_VisualizadorProcessos: TF_VisualizadorProcessos
         Align = alClient
         TabOrder = 0
         LookAndFeel.SkinName = 'Office2007Blue'
-        ExplicitTop = 0
-        ExplicitHeight = 313
         object cxGridDBTableView1: TcxGridDBTableView
           Navigator.Buttons.CustomButtons = <>
           Navigator.Buttons.First.Visible = False
